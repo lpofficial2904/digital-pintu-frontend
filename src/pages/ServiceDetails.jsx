@@ -52,7 +52,7 @@ export default function ServiceDetails() {
       setLoading(true);
       setError("");
       try {
-        const { data } = await axios.get(`${API_URL}/${encodeURIComponent(slug)}`, { headers: { "Cache-Control": "no-cache" }, params: { _t: Date.now() } });
+        const { data } = await axios.get(`${API_URL}/${encodeURIComponent(slug)}`);
         setService(data);
       } catch (requestError) {
         setError(

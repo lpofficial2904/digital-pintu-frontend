@@ -18,7 +18,7 @@ export default function Services() {
     const fetchServices = async () => {
       try {
         // Always request the latest public catalogue after an admin change.
-        const { data } = await axios.get(API_URL, { headers: { "Cache-Control": "no-cache" }, params: { _t: Date.now() } });
+        const { data } = await axios.get(API_URL);
         // console.log(data);
         
         setServices(data);

@@ -5,7 +5,12 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import iconMap, { FaCode } from "../utils/iconMapper";
 import { toast } from "sonner"; // 1. Imported Sonner
-import logo from "../assets/digital-pintu-logo.jpeg";
+// import logo from "../assets/digital-pintu-logo.jpeg";
+// import digitalPintuLogo from "../assets/digital-pintu-logo-orange-bgremove.png";
+import digitalPintuLogo from "../assets/digital-pintu-logo-new.png";
+import logo1 from "../assets/Untitled design.png";
+import logo2 from "../assets/Untitled design (1).png";
+import logo from "../assets/Untitled_design__1_-removebg-preview.png";
 import {
   FiMenu,
   FiX,
@@ -108,7 +113,7 @@ export default function Navbar() {
     const fetchNavbarServices = async () => {
       try {
         // The public endpoint returns only current active services and bypasses stale cache entries.
-        const { data } = await axios.get("https://digital-pintu-backend.onrender.com/api/services", { headers: { "Cache-Control": "no-cache" }, params: { _t: Date.now() } });
+        const { data } = await axios.get("https://digital-pintu-backend.onrender.com/api/services");
         setServices(data);
       } catch (error) {
         console.error("Unable to fetch navbar services:", error);
@@ -159,18 +164,20 @@ export default function Navbar() {
             <motion.div
               whileHover={{ rotate: 360 }}
               transition={{ duration: 1 }}
-              className="w-12 h-12 rounded-2xl bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 flex items-center justify-center text-black font-black text-xl shadow-lg"
+              // className="w-12 h-12 rounded-2xl bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 flex items-center justify-center text-black font-black text-xl shadow-lg"
             >
-              DP
+              {/* DP */}
+              {/* <img src={logo} width="150"  alt="Logo" /> */}
+              <img src={digitalPintuLogo} width="150"  alt="Logo" />
             </motion.div>
             <div>
               <h2 className="text-2xl font-bold">
                 {/* <span className="text-white">Digital</span>
                 <span className="text-cyan-400"> Pintu</span> */}
-                <img src={logo} width="80"  alt="Logo" />
+                {/* <img src={digitalPintuLogo} width="80"  alt="Logo" /> */}
               </h2>
               <p className="text-[10px] uppercase tracking-[4px] text-gray-400">
-                DIGITAL AGENCY
+                DIGITAL Pintu <br/> Solutions
               </p>
             </div>
           </Link>
