@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
   // Logout
   const logout = async () => {
     try {
-      await fetch("http://localhost:5000/api/auth/logout", {
+      await fetch("https://digital-pintu-backend.onrender.com/api/auth/logout", {
         method: "POST",
         credentials: "include",
       });
