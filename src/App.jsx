@@ -18,7 +18,7 @@ import Footer from "./components/Footer";
 
 function Home({ refreshReviews, handleReviewAdded }) {
   return (
-    <div className="bg-[#070B14] text-white">
+    <div id="home" className="bg-[#070B14] text-white">
       <Navbar />
       <Hero />
       <TechMarquee />
@@ -28,7 +28,7 @@ function Home({ refreshReviews, handleReviewAdded }) {
 
       <ReviewSection refresh={refreshReviews} />
 
-      <AddReview onReviewAdded={handleReviewAdded} />
+      {/* <AddReview onReviewAdded={handleReviewAdded} /> */}
       <Contact/>
       <Footer/>
     </div>

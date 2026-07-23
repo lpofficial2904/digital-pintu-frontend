@@ -4,6 +4,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { toast } from 'sonner';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -30,7 +32,7 @@ export default function Login() {
     const loginAction = () => 
       new Promise(async (resolve, reject) => {
         try {
-          const res = await fetch("https://digital-pintu-backend.onrender.com/api/auth/login", {
+          const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -46,7 +48,8 @@ export default function Login() {
             return reject(new Error(data.message || "Login failed"));
           }
 
-          
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
           resolve(data);
         } catch (err) {
           reject(new Error("Server Error. Please try again."));

@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import digitalPintuLogo from "../assets/digital-pintu-logo-new.png";
+
 import {
   FiArrowUp,
   FiSend,
@@ -39,10 +41,10 @@ const quickLinks = [
     title: "Services",
     path: "/services",
   },
-  {
-    title: "Portfolio",
-    path: "/portfolio",
-  },
+  // {
+  //   title: "Portfolio",
+  //   path: "/portfolio",
+  // },
   {
     title: "Contact",
     path: "/contact",
@@ -53,7 +55,7 @@ const socials = [
   {
     icon: <FaFacebookF />,
     color: "hover:bg-blue-600",
-    url: "#",
+    url: "https://www.facebook.com/pintuattends",
   },
   {
     icon: <FaInstagram />,
@@ -63,7 +65,7 @@ const socials = [
   {
     icon: <FaTwitter />,
     color: "hover:bg-sky-500",
-    url: "#",
+    url: "https://x.com/pintuattends",
   },
   {
     icon: <FaLinkedinIn />,
@@ -123,7 +125,7 @@ export default function Footer() {
 
         {/* Newsletter */}
 
-        <motion.div
+        {/* <motion.div
           initial={{
             opacity: 0,
             y: 70,
@@ -220,7 +222,7 @@ export default function Footer() {
 
           </div>
 
-        </motion.div>
+        </motion.div> */}
 
         {/* Footer Grid */}
 
@@ -251,22 +253,24 @@ export default function Footer() {
                 transition={{
                   duration: 1,
                 }}
-                className="w-16 h-16 rounded-2xl bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 flex items-center justify-center text-2xl font-black text-black"
+                
+                // className="w-16 h-16 rounded-2xl bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 flex items-center justify-center text-2xl font-black text-black"
               >
-                DP
+                <img src={digitalPintuLogo} width="150"  alt="Logo" />
+                {/* DP */}
               </motion.div>
 
               <div>
 
-                <h3 className="text-2xl font-bold text-white">
+                {/* <h3 className="text-2xl font-bold text-white">
                   Digital
                   <span className="text-cyan-400">
                     {" "}Pintu
                   </span>
-                </h3>
+                </h3> */}
 
                 <p className="text-xs tracking-[5px] text-gray-500 uppercase">
-                  Digital Agency
+                  Digital Pintu Solutions
                 </p>
 
               </div>
@@ -274,10 +278,7 @@ export default function Footer() {
             </div>
 
             <p className="mt-8 text-gray-400 leading-8">
-              We create premium websites, mobile apps,
-              branding, UI/UX design, SEO and digital
-              marketing solutions that help businesses
-              grow online.
+             Transform your business with expert website development, mobile app development, UI/UX design, SEO, branding, and digital marketing services. We build fast, responsive, and scalable digital solutions that boost your online presence and drive business growth.
             </p>
 
                         {/* Social Icons */}
@@ -410,7 +411,7 @@ export default function Footer() {
                   </p>
 
                   <p className="text-gray-400 break-all">
-                    info@digitalpintu.com
+                    digitalpintu@gmail.com
                   </p>
                 </div>
               </motion.div>
@@ -429,7 +430,7 @@ export default function Footer() {
                   </p>
 
                   <p className="text-gray-400">
-                    Jaipur, Rajasthan, India
+                   Mansarovar, Jaipur, Rajasthan, India
                   </p>
                 </div>
               </motion.div>

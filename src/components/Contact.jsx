@@ -21,6 +21,8 @@ import {
 } from "react-icons/fa";
 import Navbar from "./Navbar";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 export default function Contact() {
   const [form, setForm] = useState({
     name: "",
@@ -39,40 +41,43 @@ export default function Contact() {
   };
 
 
-  const contactCards = [
-    {
-      title: "Call Us",
-      subtitle: "+91 9876543210",
-      icon: <FiPhone />,
-      color: "from-cyan-500 to-blue-600",
-    },
-    {
-      title: "Email",
-      subtitle: "hello@digitalpintu.com",
-      icon: <FiMail />,
-      color: "from-indigo-500 to-purple-600",
-    },
-    {
-      title: "Office",
-      subtitle: "Jaipur, Rajasthan",
-      icon: <FiMapPin />,
-      color: "from-orange-500 to-pink-500",
-    },
-    {
-      title: "Working Hours",
-      subtitle: "Mon - Sat | 9 AM - 8 PM",
-      icon: <FiClock />,
-      color: "from-green-500 to-emerald-600",
-    },
-  ];
-
+ const contactCards = [
+  {
+    title: "Call Us",
+    subtitle: "+91 86196 27463",
+    icon: <FiPhone />,
+    color: "from-cyan-500 to-blue-600",
+    link: "tel:+918619627463",
+  },
+  {
+    title: "Email",
+    subtitle: "hello@digitalpintu.com",
+    icon: <FiMail />,
+    color: "from-indigo-500 to-purple-600",
+    link: "mailto:hello@digitalpintu.com",
+  },
+  {
+    title: "Office",
+    subtitle: "Mansarovar ,Jaipur, Rajasthan",
+    icon: <FiMapPin />,
+    color: "from-orange-500 to-pink-500",
+   link: "https://maps.google.com/?q=Mansarovar,Jaipur,Rajasthan"
+  },
+  {
+    title: "Working Hours",
+    subtitle: "Mon - Sat | 9 AM - 8 PM",
+    icon: <FiClock />,
+    color: "from-green-500 to-emerald-600",
+    link: "#",
+  },
+];
 
   const submitHandler = async (e) => {
   e.preventDefault();
 
  
   // const apiCall = axios.post("http://localhost:5000/api/contact", form);
-  const apiCall = axios.post("https://digital-pintu-backend.onrender.com/api/contact", form);
+  const apiCall = axios.post(`${API_BASE_URL}/api/contact`, form);
 
   
   toast.promise(apiCall, {
@@ -238,7 +243,7 @@ whileHover={{
 scale:1.05
 }}
 
-href="tel:+919876543210"
+href="tel:+918619627463"
 
 className="px-8 py-4 rounded-full border border-cyan-400 text-cyan-300"
 
@@ -273,13 +278,13 @@ className="text-pink-400"
 </motion.a>
 
 <motion.a
-whileHover={{y:-8}}
-href="#"
-className="text-green-400"
+  whileHover={{ y: -8 }}
+  href="https://wa.me/918619627463?text=Hello%20Digital%20Pintu,%20I%20want%20to%20know%20about%20your%20services."
+  target="_blank"
+  rel="noopener noreferrer"
+  className="text-green-400"
 >
-
-<FaWhatsapp/>
-
+  <FaWhatsapp />
 </motion.a>
 
 <motion.a
@@ -417,7 +422,67 @@ className="flex items-center gap-4 rounded-2xl bg-white/5 border border-white/10
 
 {/* CONTACT CARDS */}
 
+{/* CONTACT CARDS */}
 
+<section className="relative z-10 pb-24">
+  <div className="max-w-7xl mx-auto px-6">
+    <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-8">
+      {contactCards.map((card, index) => {
+        const isExternal = card.link?.startsWith("http");
+
+        return (
+          <motion.a
+            key={index}
+            href={card.link || "#"}
+            target={isExternal ? "_blank" : "_self"}
+            rel={isExternal ? "noopener noreferrer" : undefined}
+            initial={{
+              opacity: 0,
+              y: 60,
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
+            viewport={{
+              once: true,
+            }}
+            transition={{
+              delay: index * 0.12,
+            }}
+            whileHover={{
+              y: -12,
+            }}
+            className="block rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 relative overflow-hidden"
+          >
+            <div
+              className={`absolute inset-0 bg-gradient-to-r ${card.color} opacity-10`}
+            />
+
+            <div className="relative z-10">
+              <div
+                className={`w-16 h-16 rounded-2xl bg-gradient-to-r ${card.color} flex items-center justify-center text-3xl`}
+              >
+                {card.icon}
+              </div>
+
+              <h3 className="mt-8 text-2xl font-bold">
+                {card.title}
+              </h3>
+
+              <p className="mt-4 text-gray-400">
+                {card.subtitle}
+              </p>
+            </div>
+          </motion.a>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+
+{/* 
 <section className="relative z-10 pb-24">
 
 <div className="max-w-7xl mx-auto px-6">
@@ -492,7 +557,7 @@ className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 re
 
 </div>
 
-</section>
+</section> */}
 
 {/* CONTACT FORM SECTION */}
 
@@ -797,7 +862,7 @@ className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 re
                 scale:1.05
               }}
 
-              href="tel:+919876543210"
+              href="tel:+918619627463"
 
               className="mt-8 inline-flex items-center gap-3 rounded-full bg-white text-slate-900 px-7 py-4 font-bold"
 
@@ -891,19 +956,19 @@ Everything you need to know.
 {[
 {
 q:"How long does a website take?",
-a:"Usually between 7 to 20 days depending on the project."
+a:"The development timeline depends on your project's size and complexity. A standard business website usually takes 7–15 days, while custom websites, eCommerce platforms, or web applications may require 3–8 weeks. We always provide a clear timeline before starting the project."
 },
 {
 q:"Do you provide SEO?",
-a:"Yes. Every website is SEO optimized."
+a:"Yes. We offer comprehensive SEO services, including on-page SEO, technical SEO, local SEO, keyword research, content optimization, Google Business Profile optimization, and performance improvements to help your website rank higher on search engines and attract more organic traffic.."
 },
 {
 q:"Do you build mobile apps?",
-a:"Yes. Android, iOS and Cross Platform Apps."
+a:"Absolutely. We develop high-performance Android and iOS mobile applications using modern technologies like Flutter, React Native, Kotlin, and Swift. Our apps are fast, secure, scalable, and designed to deliver an excellent user experience."
 },
 {
 q:"Do you provide support?",
-a:"Absolutely. We provide complete after launch support."
+a:"Yes. We provide ongoing website maintenance, technical support, security updates, bug fixes, backups, performance optimization, and feature enhancements to ensure your website or application remains secure, reliable, and up to date after launch."
 }
 
 ].map((item,index)=>(
@@ -1052,7 +1117,7 @@ whileTap={{
 scale:.95
 }}
 
-href="tel:+919876543210"
+href="tel:+918619627463"
 
 className="px-10 py-5 rounded-full bg-white text-slate-900 font-bold"
 
@@ -1072,7 +1137,7 @@ whileTap={{
 scale:.95
 }}
 
-href="mailto:hello@digitalpintu.com"
+href="mailto:@digitalpintu.com"
 
 className="px-10 py-5 rounded-full border border-white text-white font-bold"
 

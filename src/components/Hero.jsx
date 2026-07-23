@@ -52,9 +52,7 @@ export default function Hero() {
           </h1>
 
           <p className="mt-8 text-gray-400 text-lg leading-8 max-w-xl">
-            We engineer transformative technology solutions—from cloud-native
-            infrastructure and AI systems to bulletproof cybersecurity.
-            Your vision. Our execution.
+           Transforming ideas into powerful digital experiences with innovative websites, mobile apps, UI/UX design, SEO, and result-driven marketing solutions that fuel business success.
           </p>
 
           <div className="mt-10 flex flex-wrap gap-5">

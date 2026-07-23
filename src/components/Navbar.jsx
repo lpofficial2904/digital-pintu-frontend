@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios"; 
 import { useAuth } from "../context/AuthContext";
@@ -40,13 +40,14 @@ import {
 
 const navLinks = [
   { title: "Home", path: "/#home" },
-  { title: "Services", mega: true },
+  { title: "Services", path: "/services", mega: true },
   { title: "Reviews", path: "/#reviews" },
   { title: "Contact", path: "/#contact" },
 ];
 
 export default function Navbar() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   // Dynamic services state
   const [services, setServices] = useState([]); 
@@ -62,20 +63,23 @@ export default function Navbar() {
   const scrollToSection = (id, title) => {
     setActive(title);
     setMobileOpen(false);
+    navigate("/");
 
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
+    window.setTimeout(() => {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }, 0);
   };
 
   const handleNavLinkClick = (e, item) => {
-    if (item.path && item.path.startsWith("#")) {
+    if (item.path && item.path.includes("#")) {
       e.preventDefault();
-      const elementId = item.path.substring(1);
+      const elementId = item.path.split("#")[1];
       scrollToSection(elementId, item.title);
     } else {
       setActive(item.title);
@@ -112,7 +116,8 @@ export default function Navbar() {
   useEffect(() => {
     const fetchNavbarServices = async () => {
       try {
-        // The public endpoint returns only current active services and bypasses stale cache entries.
+        
+
         const { data } = await axios.get("https://digital-pintu-backend.onrender.com/api/services");
         setServices(data);
       } catch (error) {
@@ -128,7 +133,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
+      setScrolled(window.scrollY > 1);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -137,9 +142,11 @@ export default function Navbar() {
 
   return (
     <motion.header
-      initial={{ y: -120, opacity: 0 }}
+      initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.7 }}
+      transition={{ duration: 0.1,
+        ease: "easeOut",
+       }}
       className="fixed top-0 left-0 w-full z-50 flex justify-center"
     >
       <motion.div
@@ -149,8 +156,9 @@ export default function Navbar() {
         }}
         transition={{
           type: "spring",
-          stiffness: 120,
-          damping: 18,
+          stiffness:650,
+          damping:32,
+          mass:0.45,
         }}
         className={`rounded-full transition-all duration-500 ${
           scrolled
@@ -195,7 +203,10 @@ export default function Navbar() {
                   }}
                   onMouseLeave={() => setServiceOpen(false)}
                 >
-                  <button className="relative px-5 py-3 rounded-full flex items-center gap-2 text-gray-300 hover:text-white transition">
+                  <button
+                    onClick={() => navigate(item.path)}
+                    className="relative px-5 py-3 rounded-full flex items-center gap-2 text-gray-300 hover:text-white transition"
+                  >
                     {active === item.title && (
                       <motion.div
                         layoutId="nav-pill"
@@ -400,15 +411,27 @@ export default function Navbar() {
               {navLinks.map((item) =>
                 item.mega ? (
                   <div key={item.title}>
-                    <button
-                      onClick={() => setServiceOpen(!serviceOpen)}
-                      className="w-full flex items-center justify-between rounded-xl px-4 py-4 text-gray-300 hover:bg-white/5"
-                    >
-                      Services
-                      <motion.div animate={{ rotate: serviceOpen ? 180 : 0 }}>
-                        <FiChevronDown />
-                      </motion.div>
-                    </button>
+                    <div className="w-full flex items-center justify-between rounded-xl px-4 py-4 text-gray-300 hover:bg-white/5">
+                      <Link
+                        to={item.path}
+                        onClick={() => {
+                          setMobileOpen(false);
+                          setServiceOpen(false);
+                        }}
+                        className="flex-1"
+                      >
+                        Services
+                      </Link>
+                      <button
+                        type="button"
+                        aria-label="Toggle services menu"
+                        onClick={() => setServiceOpen(!serviceOpen)}
+                      >
+                        <motion.div animate={{ rotate: serviceOpen ? 180 : 0 }}>
+                          <FiChevronDown />
+                        </motion.div>
+                      </button>
+                    </div>
 
                     <AnimatePresence>
                       {serviceOpen && (

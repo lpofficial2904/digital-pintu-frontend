@@ -23,6 +23,25 @@ const techIconMap = {
   SiFirebase: <SiFirebase className="text-4xl text-yellow-400" />
 };
 
+const technologyNameMatchers = [
+  { names: ["react"], icon: <FaReact className="text-4xl text-cyan-400" /> },
+  { names: ["next"], icon: <SiNextdotjs className="text-4xl text-white" /> },
+  { names: ["node"], icon: <FaNodeJs className="text-4xl text-green-500" /> },
+  { names: ["mongo"], icon: <DiMongodb className="text-4xl text-green-400" /> },
+  { names: ["tailwind"], icon: <SiTailwindcss className="text-4xl text-teal-400" /> },
+  { names: ["python"], icon: <FaPython className="text-4xl text-yellow-500" /> },
+  { names: ["flutter"], icon: <SiFlutter className="text-4xl text-blue-400" /> },
+  { names: ["swift"], icon: <FaSwift className="text-4xl text-orange-500" /> },
+  { names: ["kotlin"], icon: <SiKotlin className="text-4xl text-purple-400" /> },
+  { names: ["firebase"], icon: <SiFirebase className="text-4xl text-yellow-400" /> },
+];
+
+const getTechnologyIcon = (technology) => {
+  const name = technology.name?.toLowerCase() || "";
+  const matchedTechnology = technologyNameMatchers.find(({ names }) => names.some((value) => name.includes(value)));
+  return matchedTechnology?.icon || techIconMap[technology.icon] || <FaCode className="text-4xl text-cyan-400" />;
+};
+
 // Animation Variants
 const fadeInUp = {
   hidden: { opacity: 0, y: 35 },
@@ -202,7 +221,7 @@ export default function ServiceDetails() {
                   className="flex flex-col items-center justify-center rounded-2xl border border-white/5 bg-white/[0.01] p-6 hover:bg-white/[0.03] transition-all"
                 >
                   <div className="mb-4">
-                    {techIconMap[tech.icon] || <FaCode className="text-4xl text-cyan-400" />}
+                    {getTechnologyIcon(tech)}
                   </div>
                   <span className="text-sm font-semibold text-gray-300">{tech.name}</span>
                 </motion.div>
