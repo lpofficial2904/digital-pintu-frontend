@@ -7,15 +7,18 @@ import { BrowserRouter } from "react-router-dom";
 import { Toaster } from 'sonner';
 import { AuthProvider } from "./context/AuthContext";
 import VisitorTracker from "./components/VisitorTracker";
+import { HelmetProvider } from "react-helmet-async";
+
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-   {/* <HashRouter> */}
+  <HelmetProvider>
     <AuthProvider>
+      
       <VisitorTracker />
       <App />
       <Toaster position="top-center" richColors closeButton />
     </AuthProvider>
-    {/* </HashRouter> */}
+    </HelmetProvider>
   </BrowserRouter>
 );

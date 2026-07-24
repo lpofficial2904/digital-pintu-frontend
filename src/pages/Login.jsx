@@ -4,7 +4,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { toast } from 'sonner';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+// const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export default function Login() {
   const navigate = useNavigate();
@@ -29,33 +30,60 @@ export default function Login() {
     setLoading(true);
 
 
-    const loginAction = () => 
-      new Promise(async (resolve, reject) => {
-        try {
-          const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(form),
-          });
+    // const loginAction = () => 
+    //   new Promise(async (resolve, reject) => {
+    //     try {
+    //       const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+    //         method: "POST",
+    //         credentials: "include",
+    //         headers: {
+    //           "Content-Type": "application/json",
+    //         },
+    //         body: JSON.stringify(form),
+    //       });
 
-          const data = await res.json();
+    //       const data = await res.json();
 
-          if (!data.success) {
+    //       if (!data.success) {
        
-            return reject(new Error(data.message || "Login failed"));
-          }
+    //         return reject(new Error(data.message || "Login failed"));
+    //       }
 
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("user", JSON.stringify(data.user));
-          resolve(data);
-        } catch (err) {
-          reject(new Error("Server Error. Please try again."));
-        }
+    //       localStorage.setItem("token", data.token);
+    //       localStorage.setItem("user", JSON.stringify(data.user));
+    //       resolve(data);
+    //     } catch (err) {
+    //       reject(new Error("Server Error. Please try again."));
+    //     }
+    //   });
+
+
+    const loginAction = () =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
       });
 
+      const data = await res.json();
+
+      if (!data.success) {
+        return reject(new Error(data.message || "Login failed"));
+      }
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      resolve(data);
+    } catch (err) {
+      reject(new Error("Server Error. Please try again."));
+    }
+  });
   
     toast.promise(loginAction(), {
       loading: "Logging you in...",
