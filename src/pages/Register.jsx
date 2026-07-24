@@ -63,8 +63,10 @@ export default function Register() {
             return reject(new Error(data.message || "Registration Failed"));
           }
 
+          
           // Store local authentication variables
-          localStorage.setItem("token", data.token);
+          // localStorage.setItem("token", data.token);
+
           localStorage.setItem("user", JSON.stringify(data.user));
 
           resolve(data);

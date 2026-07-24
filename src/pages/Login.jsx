@@ -76,7 +76,8 @@ export default function Login() {
         return reject(new Error(data.message || "Login failed"));
       }
 
-      localStorage.setItem("token", data.token);
+      // localStorage.setItem("token", data.token);
+      
       localStorage.setItem("user", JSON.stringify(data.user));
 
       resolve(data);

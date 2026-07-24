@@ -11,12 +11,16 @@ export const AuthProvider = ({ children }) => {
   // Get Logged In User
   useEffect(() => {
     const fetchCurrentUser = async () => {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
+      if (!localStorage.getItem("user")) {
         setLoading(false);
         return;
       }
+      // const token = localStorage.getItem("token");
+
+      // if (!token) {
+      //   setLoading(false);
+      //   return;
+      // }
 
       // try {
       //   const res = await fetch("http://localhost:5000/api/auth/me", {
@@ -24,11 +28,8 @@ export const AuthProvider = ({ children }) => {
       //   });
       try {
         const res = await fetch(`${API_BASE_URL}/api/auth/me`, {
-          credentials: "include",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  credentials: "include",
+});
 
         const data = await res.json();
 
@@ -36,10 +37,12 @@ export const AuthProvider = ({ children }) => {
           setUser(data.user);
         } else {
           setUser(null);
+          localStorage.removeItem("user");
         }
       } catch (error) {
         console.log(error);
         setUser(null);
+        localStorage.removeItem("user");
       } finally {
         setLoading(false);
       }
@@ -54,18 +57,23 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Logout
+
+
   const logout = async () => {
     try {
       await fetch(`${API_BASE_URL}/api/auth/logout`, {
-        method: "POST",
-        credentials: "include",
-      });
+    method: "POST",
+    credentials: "include",
+});
     } catch (error) {
       console.log(error);
     }
 
     setUser(null);
-    localStorage.removeItem("token");
+    
+    // localStorage.removeItem("token");
+    // localStorage.removeItem("user");
+
     localStorage.removeItem("user");
     window.location.href = "/";
   };
