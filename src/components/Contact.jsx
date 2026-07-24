@@ -35,9 +35,13 @@ export default function Contact() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
+    const value = e.target.name === "phone"
+      ? e.target.value.replace(/\D/g, "").slice(0, 10)
+      : e.target.value;
+
     setForm((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [e.target.name]: value,
     }));
   };
 
@@ -654,11 +658,15 @@ className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 re
             </label>
 
             <input
-              type="text"
+              type="tel"
               name="phone"
+              required
+              inputMode="numeric"
+              pattern="[0-9]{10}"
+              maxLength={10}
               value={form.phone}
               onChange={handleChange}
-              placeholder="+91 XXXXX XXXXX"
+              placeholder="10-digit mobile number"
               className="w-full rounded-2xl border border-white/10 bg-white/5 px-5 py-4 outline-none focus:border-cyan-400 transition"
             />
           </motion.div>
