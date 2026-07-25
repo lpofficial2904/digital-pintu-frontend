@@ -15,6 +15,7 @@ import Register from "./pages/Register";
 import ServiceDetails from "./pages/ServiceDetails";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
+import FloatingContactButtons from "./components/FloatingContactButtons";
 
 function Home({ refreshReviews, handleReviewAdded }) {
   return (
@@ -43,6 +44,7 @@ function App() {
   };
 
   return (
+    <>
     <Routes>
       <Route
         path="/"
@@ -72,6 +74,8 @@ function App() {
 />
       <Route path="/contact/" element={<Contact />} />
     </Routes>
+    <FloatingContactButtons />
+    </>
   );
 }
 

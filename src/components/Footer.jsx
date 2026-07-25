@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import digitalPintuLogo from "../assets/digital-pintu-logo-new.png";
 
 import {
   FiArrowUp,
+  FiArrowDown,
   FiSend,
   FiPhone,
   FiMail,
@@ -80,11 +82,19 @@ const socials = [
 ];
 
 export default function Footer() {
-  const scrollTop = () =>
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+  const [atTop, setAtTop] = useState(true);
+
+  useEffect(() => {
+    const updatePosition = () => setAtTop(window.scrollY < 50);
+    updatePosition();
+    window.addEventListener("scroll", updatePosition, { passive: true });
+    return () => window.removeEventListener("scroll", updatePosition);
+  }, []);
+
+  const handlePageScroll = () => window.scrollTo({
+    top: atTop ? document.documentElement.scrollHeight : 0,
+    behavior: "smooth",
+  });
 
   return (
     <footer className="relative overflow-hidden bg-[#030712]">
@@ -499,10 +509,11 @@ export default function Footer() {
         whileTap={{
           scale: 0.95,
         }}
-        onClick={scrollTop}
-        className="fixed bottom-8 right-8 z-50 w-14 h-14 rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600 shadow-[0_0_35px_rgba(6,182,212,.45)] flex items-center justify-center text-white"
+        onClick={handlePageScroll}
+        aria-label={atTop ? "Scroll to bottom" : "Scroll to top"}
+        className="fixed bottom-24 right-5 z-50 w-14 h-14 rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600 shadow-[0_0_35px_rgba(6,182,212,.45)] flex items-center justify-center text-white"
       >
-        <FiArrowUp size={24} />
+        {atTop ? <FiArrowDown size={24} /> : <FiArrowUp size={24} />}
       </motion.button>
 
     </footer>
