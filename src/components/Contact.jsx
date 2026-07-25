@@ -1,8 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { toast } from 'sonner';
+import { useAuth } from "../context/AuthContext";
 
 import {
   FiPhone,
@@ -25,6 +27,8 @@ import Navbar from "./Navbar";
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export default function Contact() {
+  const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -77,9 +81,15 @@ export default function Contact() {
   },
 ];
 
-  const submitHandler = async (e) => {
+ const submitHandler = async (e) => {
   e.preventDefault();
 
+  if (authLoading) return;
+  if (!user) {
+    toast.info("Please log in before submitting the contact form.");
+    navigate("/login", { state: { returnToContact: true } });
+    return;
+  }
  
   // const apiCall = axios.post("http://localhost:5000/api/contact", form);
   const apiCall = axios.post(`${API_BASE_URL}/api/contact`, form);
@@ -741,9 +751,10 @@ className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 re
   }}
   whileTap={{ scale: .97 }}
   type="submit"
-  className="w-full rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600 py-5 flex items-center justify-center gap-3 text-lg font-bold"
+  disabled={isLoading || authLoading}
+  className="w-full rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600 py-5 flex items-center justify-center gap-3 text-lg font-bold disabled:cursor-not-allowed disabled:opacity-60"
 >
-  Send Message
+  {authLoading ? "Checking login..." : isLoading ? "Sending..." : "Send Message"}
   <FiSend className="text-xl" />
 </motion.button>
 

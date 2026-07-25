@@ -16,6 +16,9 @@ import ServiceDetails from "./pages/ServiceDetails";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import FloatingContactButtons from "./components/FloatingContactButtons";
+import AIChatBot from "./components/AIChatBot";
+import Blogs from "./pages/Blogs";
+import BlogDetails from "./pages/BlogDetails";
 
 function Home({ refreshReviews, handleReviewAdded }) {
   return (
@@ -73,8 +76,11 @@ function App() {
   }
 />
       <Route path="/contact/" element={<Contact />} />
+      <Route path="/blogs" element={<Blogs />} />
+      <Route path="/blogs/:slug" element={<BlogDetails />} />
     </Routes>
     <FloatingContactButtons />
+    <AIChatBot />
     </>
   );
 }

@@ -242,8 +242,18 @@ import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async"; // Modern & recommended over react-helmet
-import { FaArrowRight, FaCheck, FaCode, FaReact, FaNodeJs, FaPython, FaSwift } from "react-icons/fa";
-import { SiNextdotjs, SiTailwindcss, SiFlutter, SiKotlin, SiFirebase } from "react-icons/si";
+import {
+  FaArrowRight, FaAws, FaChartLine, FaCheck, FaCode, FaFacebookF,
+  FaGithub, FaGoogle, FaInstagram, FaLinkedinIn, FaMapMarkerAlt,
+  FaNodeJs, FaPython, FaReact, FaSearch, FaStar, FaSwift, FaYoutube,
+} from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
+import {
+  SiCloudflare, SiCpanel, SiDigitalocean, SiExpress, SiFirebase,
+  SiFlutter, SiGodaddy, SiGoogle, SiGoogleads, SiGooglemaps,
+  SiGooglesearchconsole, SiGoogletagmanager, SiHostinger, SiKotlin,
+  SiMeta, SiMongodb, SiNextdotjs, SiPlesk, SiSemrush, SiTailwindcss,
+} from "react-icons/si";
 import { DiMongodb } from "react-icons/di";
 import iconMap from "../utils/iconMapper";
 
@@ -251,35 +261,67 @@ const API_URL = "https://digital-pintu-backend.onrender.com/api/services";
 
 // Helper map to dynamically load specific icons for technologies
 const techIconMap = {
-  FaReact: <FaReact className="text-4xl text-cyan-400" />,
-  SiNextdotjs: <SiNextdotjs className="text-4xl text-white" />,
-  FaNodeJs: <FaNodeJs className="text-4xl text-green-500" />,
-  DiMongodb: <DiMongodb className="text-4xl text-green-400" />,
-  SiTailwindcss: <SiTailwindcss className="text-4xl text-teal-400" />,
-  FaPython: <FaPython className="text-4xl text-yellow-500" />,
-  SiFlutter: <SiFlutter className="text-4xl text-blue-400" />,
-  FaSwift: <FaSwift className="text-4xl text-orange-500" />,
-  SiKotlin: <SiKotlin className="text-4xl text-purple-400" />,
-  SiFirebase: <SiFirebase className="text-4xl text-yellow-400" />
+  FaReact: [FaReact, "text-cyan-400"],
+  SiNextdotjs: [SiNextdotjs, "text-white"],
+  FaNodeJs: [FaNodeJs, "text-green-500"],
+  DiMongodb: [DiMongodb, "text-green-400"],
+  SiMongodb: [SiMongodb, "text-green-400"],
+  SiExpress: [SiExpress, "text-gray-200"],
+  SiTailwindcss: [SiTailwindcss, "text-teal-400"],
+  FaPython: [FaPython, "text-yellow-400"],
+  SiFlutter: [SiFlutter, "text-blue-400"],
+  FaSwift: [FaSwift, "text-orange-500"],
+  SiKotlin: [SiKotlin, "text-purple-400"],
+  SiFirebase: [SiFirebase, "text-yellow-400"],
+  FaGithub: [FaGithub, "text-white"],
+  FaAws: [FaAws, "text-orange-400"],
+  FaChartLine: [FaChartLine, "text-cyan-400"],
+  SiCpanel: [SiCpanel, "text-orange-500"],
+  SiPlesk: [SiPlesk, "text-cyan-300"],
+  SiCloudflare: [SiCloudflare, "text-orange-400"],
+  SiGoogleworkspace: [SiGoogle, "text-blue-400"],
+  SiHostinger: [SiHostinger, "text-purple-400"],
+  SiGodaddy: [SiGodaddy, "text-green-400"],
+  SiDigitalocean: [SiDigitalocean, "text-blue-400"],
+  SiGooglesearchconsole: [SiGooglesearchconsole, "text-blue-400"],
+  SiSemrush: [SiSemrush, "text-orange-500"],
+  SiGoogletagmanager: [SiGoogletagmanager, "text-blue-400"],
+  SiGoogleads: [SiGoogleads, "text-blue-400"],
+  SiMeta: [SiMeta, "text-blue-500"],
+  SiGoogle: [SiGoogle, "text-blue-400"],
+  SiGooglemaps: [SiGooglemaps, "text-red-400"],
+  FaGoogle: [FaGoogle, "text-blue-400"],
+  FaFacebookF: [FaFacebookF, "text-blue-500"],
+  FaInstagram: [FaInstagram, "text-pink-500"],
+  FaLinkedinIn: [FaLinkedinIn, "text-blue-400"],
+  FaXTwitter: [FaXTwitter, "text-white"],
+  FaYoutube: [FaYoutube, "text-red-500"],
+  FaSearch: [FaSearch, "text-cyan-400"],
+  FaMapMarkerAlt: [FaMapMarkerAlt, "text-red-400"],
+  FaStar: [FaStar, "text-yellow-400"],
 };
 
 const technologyNameMatchers = [
-  { names: ["react"], icon: <FaReact className="text-4xl text-cyan-400" /> },
-  { names: ["next"], icon: <SiNextdotjs className="text-4xl text-white" /> },
-  { names: ["node"], icon: <FaNodeJs className="text-4xl text-green-500" /> },
-  { names: ["mongo"], icon: <DiMongodb className="text-4xl text-green-400" /> },
-  { names: ["tailwind"], icon: <SiTailwindcss className="text-4xl text-teal-400" /> },
-  { names: ["python"], icon: <FaPython className="text-4xl text-yellow-500" /> },
-  { names: ["flutter"], icon: <SiFlutter className="text-4xl text-blue-400" /> },
-  { names: ["swift"], icon: <FaSwift className="text-4xl text-orange-500" /> },
-  { names: ["kotlin"], icon: <SiKotlin className="text-4xl text-purple-400" /> },
-  { names: ["firebase"], icon: <SiFirebase className="text-4xl text-yellow-400" /> },
+  ["react", "FaReact"], ["next", "SiNextdotjs"], ["node", "FaNodeJs"],
+  ["mongo", "SiMongodb"], ["express", "SiExpress"], ["tailwind", "SiTailwindcss"],
+  ["python", "FaPython"], ["flutter", "SiFlutter"], ["swift", "FaSwift"],
+  ["kotlin", "SiKotlin"], ["firebase", "SiFirebase"], ["github", "FaGithub"],
+  ["cpanel", "SiCpanel"], ["plesk", "SiPlesk"], ["cloudflare", "SiCloudflare"],
+  ["workspace", "SiGoogleworkspace"], ["hostinger", "SiHostinger"], ["godaddy", "SiGodaddy"],
+  ["digitalocean", "SiDigitalocean"], ["search console", "SiGooglesearchconsole"],
+  ["semrush", "SiSemrush"], ["tag manager", "SiGoogletagmanager"],
+  ["google ads", "SiGoogleads"], ["meta", "SiMeta"], ["facebook", "FaFacebookF"],
+  ["instagram", "FaInstagram"], ["linkedin", "FaLinkedinIn"], ["twitter", "FaXTwitter"],
+  ["youtube", "FaYoutube"], ["google maps", "SiGooglemaps"], ["google analytics", "FaChartLine"],
+  ["google business", "FaGoogle"], ["local seo", "FaMapMarkerAlt"], ["reviews", "FaStar"],
+  ["aws", "FaAws"],
 ];
 
 const getTechnologyIcon = (technology) => {
   const name = technology.name?.toLowerCase() || "";
-  const matchedTechnology = technologyNameMatchers.find(({ names }) => names.some((value) => name.includes(value)));
-  return matchedTechnology?.icon || techIconMap[technology.icon] || <FaCode className="text-4xl text-cyan-400" />;
+  const matchedTechnology = technologyNameMatchers.find(([keyword]) => name.includes(keyword));
+  const [Icon, color] = techIconMap[technology.icon] || techIconMap[matchedTechnology?.[1]] || [FaCode, "text-cyan-400"];
+  return <Icon className={`text-4xl ${color}`} />;
 };
 
 // Animation Variants
@@ -363,8 +405,8 @@ export default function ServiceDetails() {
   const technologies = service.technologies || [];
   
   // Dynamic SEO Data Preparation
-  const siteTitle = `${service.title} | Digital Pintu Services`;
-  const metaDescription = service.description?.substring(0, 160) || "Explore top-tier software and web development services at Digital Pintu.";
+  const siteTitle = service.metaTitle || `${service.title} | Digital Pintu Services`;
+  const metaDescription = service.metaDescription || service.description?.substring(0, 160) || "Explore top-tier software and web development services at Digital Pintu.";
   const pageUrl = window.location.href;
 
   return (
@@ -373,6 +415,7 @@ export default function ServiceDetails() {
       <Helmet>
         <title>{siteTitle}</title>
         <meta name="description" content={metaDescription} />
+        {service.metaKeywords && <meta name="keywords" content={service.metaKeywords} />}
         <link rel="canonical" href={pageUrl} />
 
         {/* Open Graph / Facebook */}
