@@ -2,14 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiMail, FiPhone, FiSend, FiX } from "react-icons/fi";
 import chatbotRobot from "../assets/chatbot-robot.gif";
+import { defaultSiteSettings } from "../utils/useSiteSettings";
 
 const SERVICES_URL = "https://digital-pintu-backend.onrender.com/api/services";
 const SETTINGS_URL = `${import.meta.env.VITE_API_URL}/api/site-settings`;
 const quickReplies = ["View services", "Request pricing", "Contact us"];
 
 const defaultSettings = {
-  phoneNumber: "+91 86196 27463",
-  contactEmail: "hello@digitalpintu.com",
+  ...defaultSiteSettings,
   chatbotGreeting: "Hello! Welcome to Digital Pintu Solutions. How may I assist you today?",
   chatbotServicesMessage: "Here is our complete list of currently active services:",
   chatbotPricingMessage: "Our pricing is tailored to each project's scope and requirements. Please share your requirements through the Contact section, and our team will provide a suitable quotation.",

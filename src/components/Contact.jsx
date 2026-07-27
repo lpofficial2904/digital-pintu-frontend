@@ -22,6 +22,7 @@ import {
   FaLinkedin,
 } from "react-icons/fa";
 import Navbar from "./Navbar";
+import useSiteSettings from "../utils/useSiteSettings";
 
 // const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const API_BASE_URL = import.meta.env.VITE_API_URL;
@@ -29,6 +30,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL;
 export default function Contact() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
+  const settings = useSiteSettings();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -50,27 +52,34 @@ export default function Contact() {
   };
 
 
+  const cleanPhone = settings.phoneNumber.replace(/[^+\d]/g, "");
+  const phoneHref = `tel:${cleanPhone}`;
+  const emailHref = `mailto:${settings.contactEmail}`;
+  const whatsappHref = `https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(settings.whatsappMessage || "")}`;
+  const mapHref = `https://maps.google.com/?q=${encodeURIComponent(settings.address)}`;
+  const mapEmbedUrl = `https://www.google.com/maps?q=${encodeURIComponent(settings.address)}&output=embed`;
+
  const contactCards = [
   {
     title: "Call Us",
-    subtitle: "+91 86196 27463",
+    subtitle: settings.phoneNumber,
     icon: <FiPhone />,
     color: "from-cyan-500 to-blue-600",
-    link: "tel:+918619627463",
+    link: phoneHref,
   },
   {
     title: "Email",
-    subtitle: "hello@digitalpintu.com",
+    subtitle: settings.contactEmail,
     icon: <FiMail />,
     color: "from-indigo-500 to-purple-600",
-    link: "mailto:hello@digitalpintu.com",
+    link: emailHref,
   },
   {
     title: "Office",
-    subtitle: "Mansarovar ,Jaipur, Rajasthan",
+    subtitle: settings.address,
     icon: <FiMapPin />,
     color: "from-orange-500 to-pink-500",
-   link: "https://maps.google.com/?q=Mansarovar,Jaipur,Rajasthan"
+   link: mapHref
   },
   {
     title: "Working Hours",
@@ -258,7 +267,7 @@ whileHover={{
 scale:1.05
 }}
 
-href="tel:+918619627463"
+href={phoneHref}
 
 className="px-8 py-4 rounded-full border border-cyan-400 text-cyan-300"
 
@@ -294,7 +303,7 @@ className="text-pink-400"
 
 <motion.a
   whileHover={{ y: -8 }}
-  href="https://wa.me/918619627463?text=Hello%20Digital%20Pintu,%20I%20want%20to%20know%20about%20your%20services."
+  href={whatsappHref}
   target="_blank"
   rel="noopener noreferrer"
   className="text-green-400"
@@ -882,7 +891,7 @@ className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 re
                 scale:1.05
               }}
 
-              href="tel:+918619627463"
+              href={phoneHref}
 
               className="mt-8 inline-flex items-center gap-3 rounded-full bg-white text-slate-900 px-7 py-4 font-bold"
 
@@ -931,8 +940,7 @@ className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 re
 
       <iframe
         title="Google Map"
-        // src="https://www.google.com/maps?q=Jaipur,Rajasthan&output=embed"
-  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d28490.871279261354!2d75.73351984284524!3d26.860341738722477!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396db560273e196d%3A0x918a37842bf2bbc3!2sMansarovar%2C%20Jaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1720000000000!5m2!1sen!2sin" 
+  src={mapEmbedUrl}
 
         className="w-full h-[500px]"
         loading="lazy"
@@ -1137,7 +1145,7 @@ whileTap={{
 scale:.95
 }}
 
-href="tel:+918619627463"
+href={phoneHref}
 
 className="px-10 py-5 rounded-full bg-white text-slate-900 font-bold"
 
@@ -1157,7 +1165,7 @@ whileTap={{
 scale:.95
 }}
 
-href="mailto:@digitalpintu.com"
+href={emailHref}
 
 className="px-10 py-5 rounded-full border border-white text-white font-bold"
 

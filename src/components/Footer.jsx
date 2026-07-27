@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import digitalPintuLogo from "../assets/digital-pintu-logo-new.png";
+import useSiteSettings from "../utils/useSiteSettings";
 
 import {
   FiArrowUp,
@@ -83,6 +84,7 @@ const socials = [
 
 export default function Footer() {
   const [atTop, setAtTop] = useState(true);
+  const settings = useSiteSettings();
 
   useEffect(() => {
     const updatePosition = () => setAtTop(window.scrollY < 50);
@@ -402,7 +404,7 @@ export default function Footer() {
                   </p>
 
                   <p className="text-gray-400">
-                    +91 9876543210
+                    {settings.phoneNumber}
                   </p>
                 </div>
               </motion.div>
@@ -421,7 +423,7 @@ export default function Footer() {
                   </p>
 
                   <p className="text-gray-400 break-all">
-                    digitalpintu@gmail.com
+                    {settings.contactEmail}
                   </p>
                 </div>
               </motion.div>
@@ -440,7 +442,7 @@ export default function Footer() {
                   </p>
 
                   <p className="text-gray-400">
-                   Mansarovar, Jaipur, Rajasthan, India
+                   {settings.address}
                   </p>
                 </div>
               </motion.div>
