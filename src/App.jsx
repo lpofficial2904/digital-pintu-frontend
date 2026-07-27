@@ -19,6 +19,7 @@ import FloatingContactButtons from "./components/FloatingContactButtons";
 import AIChatBot from "./components/AIChatBot";
 import Blogs from "./pages/Blogs";
 import BlogDetails from "./pages/BlogDetails";
+import ProcessSection from "./components/ProcessSection";
 
 function Home({ refreshReviews, handleReviewAdded }) {
   return (
@@ -29,6 +30,7 @@ function Home({ refreshReviews, handleReviewAdded }) {
       <Services />
       <StatsSection />
       <WhyChooseUs />
+      <ProcessSection />
 
       <ReviewSection refresh={refreshReviews} />
 
