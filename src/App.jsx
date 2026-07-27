@@ -22,6 +22,7 @@ import Blogs from "./pages/Blogs";
 import BlogDetails from "./pages/BlogDetails";
 import ProcessSection from "./components/ProcessSection";
 import ManagedPage from "./pages/ManagedPage";
+import LegalPage from "./pages/LegalPage";
 
 const WEBSITE_PAGES_API = `${import.meta.env.VITE_API_URL || "https://digital-pintu-backend.onrender.com"}/api/website-pages`;
 
@@ -114,6 +115,8 @@ function App() {
       <Route path="/blogs/:slug" element={<PageGate slug="blogs"><BlogDetails /></PageGate>} />
       <Route path="/about" element={<ManagedPage pageSlug="about" />} />
       <Route path="/careers" element={<ManagedPage pageSlug="careers" />} />
+      <Route path="/privacy-policy" element={<LegalPage type="privacy" />} />
+      <Route path="/terms" element={<LegalPage type="terms" />} />
       <Route path="/pages/:slug" element={<ManagedPage />} />
     </Routes>
     <FloatingContactButtons />

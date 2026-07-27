@@ -221,7 +221,15 @@ export default function Navbar() {
       >
         <div className="flex h-20 items-center justify-between px-4 sm:px-8">
           {/* Logo */}
-          <Link className="flex min-w-0 items-center gap-2 sm:gap-3" to="/">
+          <Link
+            className="flex shrink-0 items-center gap-2 sm:gap-3"
+            to="/"
+            aria-label="Digital Pintu Solutions home"
+            onClick={() => {
+              setMobileOpen(false);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          >
             <motion.div
               whileHover={{ rotate: 360 }}
               transition={{ duration: 1 }}
@@ -242,6 +250,15 @@ export default function Navbar() {
               </p>
             </div>
           </Link>
+
+          <div className="min-w-0 flex-1 px-1 text-center sm:hidden">
+            <p className="text-[9px] font-bold uppercase leading-tight tracking-[0.8px] text-white">
+              Digital Pintu
+            </p>
+            <p className="text-[8px] uppercase leading-tight tracking-[1.4px] text-cyan-400">
+              Solution
+            </p>
+          </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-2">
