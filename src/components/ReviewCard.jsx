@@ -6,10 +6,10 @@ const accentStyles = [
     avatar: "border-cyan-400/60 bg-cyan-500/25 text-cyan-200",
   },
   {
-    avatar: "border-violet-400/60 bg-violet-500/30 text-white",
+    avatar: "border-sky-400/60 bg-sky-500/25 text-sky-100",
   },
   {
-    avatar: "border-fuchsia-400/40 bg-fuchsia-500/20 text-fuchsia-200",
+    avatar: "border-blue-400/50 bg-blue-500/20 text-blue-200",
   },
 ];
 
@@ -35,7 +35,7 @@ export default function ReviewCard({ review, active = false, accentIndex = 0 }) 
       transition={{ duration: 0.4, ease: "easeOut" }}
       className={`flex min-h-[362px] w-full flex-col rounded-[26px] border px-8 py-10 transition-colors duration-500 sm:px-10 ${
         active
-          ? "border-violet-500/55 bg-[#181b25] shadow-[0_18px_55px_rgba(80,45,140,0.12)]"
+          ? "border-cyan-400/45 bg-[#101b2a] shadow-[0_18px_55px_rgba(6,182,212,0.12)]"
           : "border-white/[0.07] bg-[#151923]"
       }`}
     >

@@ -41,6 +41,7 @@ import {
 const navLinks = [
   { title: "Home", path: "/#home" },
   { title: "Services", path: "/services", mega: true },
+  { title: "Process", path: "/#process" },
   { title: "Blogs", path: "/blogs" },
   { title: "Reviews", path: "/#reviews" },
   { title: "Contact", path: "/#contact" },

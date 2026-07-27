@@ -60,7 +60,7 @@ export default function ReviewSection({ refresh }) {
   }, [activeIndex, reviews]);
 
   return (
-    <section id="reviews" className="relative overflow-hidden bg-[#11151e] py-20 text-white sm:py-24">
+    <section id="reviews" className="relative overflow-hidden bg-[#08111f] py-20 text-white sm:py-24">
       <div className="absolute inset-y-0 left-0 w-[34%] bg-cyan-950/10 blur-3xl" />
       <div className="relative mx-auto max-w-[1460px] px-5 sm:px-8 lg:px-12">
         <motion.div
@@ -68,13 +68,13 @@ export default function ReviewSection({ refresh }) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <div className="inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/[0.08] px-4 py-2 text-xs font-semibold uppercase tracking-wide text-fuchsia-400">
-            <span className="h-1.5 w-1.5 rounded-full bg-violet-400 shadow-[0_0_10px_rgba(168,85,247,.8)]" />
+          <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/[0.08] px-4 py-2 text-xs font-semibold uppercase tracking-wide text-cyan-300">
+            <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,.8)]" />
             Client Proof
           </div>
           <h2 className="mt-6 text-[40px] font-black leading-tight tracking-[-0.04em] sm:text-5xl lg:text-[62px]">
             Words from{" "}
-            <span className="bg-gradient-to-r from-cyan-400 via-violet-500 to-fuchsia-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-cyan-400 via-sky-500 to-blue-600 bg-clip-text text-transparent">
               Happy Clients
             </span>
           </h2>
