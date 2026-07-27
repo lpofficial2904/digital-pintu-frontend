@@ -134,12 +134,23 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
+    let animationFrame;
+
     const handleScroll = () => {
-      setScrolled(window.scrollY > 1);
+      if (animationFrame) return;
+
+      animationFrame = window.requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 12);
+        animationFrame = null;
+      });
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (animationFrame) window.cancelAnimationFrame(animationFrame);
+    };
   }, []);
 
   return (
@@ -153,24 +164,23 @@ export default function Navbar() {
     >
       <motion.div
         animate={{
-          width: scrolled ? "88%" : "95%",
-          marginTop: scrolled ? 16 : 8,
+          width: scrolled ? "92%" : "96%",
+          marginTop: scrolled ? 12 : 8,
         }}
         transition={{
-          type: "spring",
-          stiffness:650,
-          damping:32,
-          mass:0.45,
+          type: "tween",
+          duration: 0.18,
+          ease: "easeOut",
         }}
-        className={`rounded-full transition-all duration-500 ${
+        className={`max-w-[1500px] rounded-full transition-colors duration-200 ${
           scrolled
             ? "bg-[#07111d]/75 backdrop-blur-2xl border border-white/10 shadow-[0_20px_60px_rgba(0,255,255,.10)]"
             : "bg-[#07111d]/35 backdrop-blur-xl"
         }`}
       >
-        <div className="h-20 px-8 flex items-center justify-between">
+        <div className="flex h-16 items-center justify-between px-4 sm:h-20 sm:px-8">
           {/* Logo */}
-          <Link className="flex items-center gap-3" to="/">
+          <Link className="flex min-w-0 items-center gap-2 sm:gap-3" to="/">
             <motion.div
               whileHover={{ rotate: 360 }}
               transition={{ duration: 1 }}
@@ -178,9 +188,9 @@ export default function Navbar() {
             >
               {/* DP */}
               {/* <img src={logo} width="150"  alt="Logo" /> */}
-              <img src={digitalPintuLogo} width="150"  alt="Logo" />
+              <img src={digitalPintuLogo} className="w-[112px] sm:w-[150px]" alt="Logo" />
             </motion.div>
-            <div>
+            <div className="hidden sm:block">
               <h2 className="text-2xl font-bold">
                 {/* <span className="text-white">Digital</span>
                 <span className="text-cyan-400"> Pintu</span> */}
@@ -392,7 +402,7 @@ export default function Navbar() {
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden text-white text-3xl"
+            className="shrink-0 text-3xl text-white lg:hidden"
           >
             {mobileOpen ? <FiX /> : <FiMenu />}
           </motion.button>
@@ -407,9 +417,9 @@ export default function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.45 }}
-            className="absolute top-28 w-[95%] rounded-3xl overflow-hidden bg-[#08111f]/95 backdrop-blur-3xl border border-white/10 lg:hidden"
+            className="absolute top-24 max-h-[calc(100vh-7rem)] w-[calc(100%-1rem)] overflow-y-auto rounded-3xl border border-white/10 bg-[#08111f]/95 backdrop-blur-3xl sm:top-28 sm:w-[95%] lg:hidden"
           >
-            <div className="flex flex-col gap-2 p-6">
+            <div className="flex min-w-0 flex-col gap-2 p-4 sm:p-6">
               {navLinks.map((item) =>
                 item.mega ? (
                   <div key={item.title}>
