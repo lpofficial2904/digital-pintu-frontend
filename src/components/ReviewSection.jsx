@@ -1,148 +1,137 @@
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import ReviewCard from "./ReviewCard";
-import { useAuth } from "../context/AuthContext";
 
-
-
-// const API_URL = "http://localhost:5000/api/reviews";
 const API_URL = "https://digital-pintu-backend.onrender.com/api/reviews";
 
 export default function ReviewSection({ refresh }) {
-  const { user } = useAuth();
-  // console.log(user);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  const fetchReviews = async () => {
-    try {
-      // Cache bypass ensures the public section reflects moderation changes on refresh.
-      const response = await fetch(`${API_URL}?_t=${Date.now()}`, { cache: "no-store" });
-
-      const data = await response.json();
-      // console.log(data);
-
-      if (data.success) {
-        setReviews(data.reviews);
+  useEffect(() => {
+    let mounted = true;
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch(`${API_URL}?_t=${Date.now()}`, {
+          cache: "no-store",
+        });
+        const data = await response.json();
+        if (mounted && data.success) {
+          const managedReviews = [...(data.reviews || [])].sort(
+            (first, second) => Number(second.featured) - Number(first.featured)
+          );
+          setReviews(managedReviews);
+          const featuredIndex = managedReviews.findIndex((review) => review.featured);
+          setActiveIndex(featuredIndex >= 0 ? featuredIndex : 0);
+        }
+      } catch {
+        if (mounted) setReviews([]);
+      } finally {
+        if (mounted) setLoading(false);
       }
-    } catch (error) {
-      console.log(error);
+    };
+    fetchReviews();
+    return () => {
+      mounted = false;
+    };
+  }, [refresh]);
+
+  useEffect(() => {
+    if (reviews.length < 2) return undefined;
+    const timer = window.setInterval(() => {
+      setActiveIndex((current) => (current + 1) % reviews.length);
+    }, 5500);
+    return () => window.clearInterval(timer);
+  }, [reviews.length]);
+
+  const visibleReviews = useMemo(() => {
+    if (!reviews.length) return [];
+    if (reviews.length === 1) {
+      return [{ review: reviews[0], index: 0, position: "center" }];
     }
-
-    setLoading(false);
-  };
-
- useEffect(() => {
-  fetchReviews();
-}, [refresh]);
+    const previousIndex = (activeIndex - 1 + reviews.length) % reviews.length;
+    const nextIndex = (activeIndex + 1) % reviews.length;
+    return [
+      { review: reviews[previousIndex], index: previousIndex, position: "left" },
+      { review: reviews[activeIndex], index: activeIndex, position: "center" },
+      { review: reviews[nextIndex], index: nextIndex, position: "right" },
+    ];
+  }, [activeIndex, reviews]);
 
   return (
-    <section id="reviews" className="bg-[#08111f] py-24 overflow-hidden">
-
-      <div className="max-w-7xl mx-auto px-6">
-
-        {/* Heading */}
-
+    <section id="reviews" className="relative overflow-hidden bg-[#11151e] py-20 text-white sm:py-24">
+      <div className="absolute inset-y-0 left-0 w-[34%] bg-cyan-950/10 blur-3xl" />
+      <div className="relative mx-auto max-w-[1460px] px-5 sm:px-8 lg:px-12">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: .8 }}
           viewport={{ once: true }}
-          className="text-center mb-20"
         >
-
-          <p className="uppercase tracking-[5px] text-cyan-400 font-semibold text-sm">
-            TESTIMONIALS
-          </p>
-
-          <h2 className="text-5xl md:text-6xl font-bold text-white mt-4">
-
-            Trusted by
-
-            <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-              {" "}Industry Leaders
+          <div className="inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/[0.08] px-4 py-2 text-xs font-semibold uppercase tracking-wide text-fuchsia-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-violet-400 shadow-[0_0_10px_rgba(168,85,247,.8)]" />
+            Client Proof
+          </div>
+          <h2 className="mt-6 text-[40px] font-black leading-tight tracking-[-0.04em] sm:text-5xl lg:text-[62px]">
+            Words from{" "}
+            <span className="bg-gradient-to-r from-cyan-400 via-violet-500 to-fuchsia-400 bg-clip-text text-transparent">
+              Happy Clients
             </span>
-
           </h2>
-
-          <p className="text-gray-400 mt-8 max-w-3xl mx-auto text-lg leading-8">
-
-            We build scalable digital products that help
-            startups and enterprises grow faster.
-
-          </p>
-
         </motion.div>
 
-        {/* Loading */}
-
         {loading ? (
-
-          <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
-
-            {[1,2,3,4,5,6].map((item)=>(
-              <div
-                key={item}
-                className="h-[320px] rounded-2xl bg-[#111b2a] animate-pulse"
-              />
+          <div className="mt-10 grid gap-8 md:grid-cols-3">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div key={index} className="h-[362px] animate-pulse rounded-[26px] border border-white/[0.06] bg-white/[0.03]" />
             ))}
-
           </div>
+        ) : reviews.length ? (
+          <>
+            <div className={`mt-9 grid gap-8 ${reviews.length === 1 ? "mx-auto max-w-xl" : "md:grid-cols-3"}`}>
+              <AnimatePresence mode="popLayout" initial={false}>
+                {visibleReviews.map(({ review, index, position }, cardIndex) => (
+                  <motion.div
+                    key={`${position}-${review._id}`}
+                    layout
+                    className={position === "center" ? "order-first md:order-none" : "hidden md:block"}
+                    onClick={() => setActiveIndex(index)}
+                  >
+                    <ReviewCard
+                      review={review}
+                      active={position === "center"}
+                      accentIndex={cardIndex}
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
 
+            {reviews.length > 1 && (
+              <div className="mt-9 flex items-center justify-center gap-2" aria-label="Review carousel navigation">
+                {reviews.map((review, index) => (
+                  <button
+                    key={review._id}
+                    type="button"
+                    aria-label={`Show review ${index + 1}`}
+                    aria-current={index === activeIndex}
+                    onClick={() => setActiveIndex(index)}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      index === activeIndex
+                        ? "w-7 bg-cyan-400"
+                        : "w-2 bg-slate-700 hover:bg-slate-500"
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         ) : (
-
-          <motion.div
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            variants={{
-              hidden:{},
-              show:{
-                transition:{
-                  staggerChildren:.15
-                }
-              }
-            }}
-            className="grid lg:grid-cols-4 md:grid-cols-2 gap-8"
-          >
-
-            {reviews.map((review,index)=>(
-
-              <motion.div
-
-                key={review._id}
-
-                variants={{
-                  hidden:{
-                    opacity:0,
-                    y:50
-                  },
-
-                  show:{
-                    opacity:1,
-                    y:0
-                  }
-
-                }}
-
-                transition={{
-                  duration:.6
-                }}
-
-              >
-
-                <ReviewCard review={review}/>
-
-              </motion.div>
-
-            ))}
-
-          </motion.div>
-
+          <p className="mt-10 rounded-3xl border border-dashed border-white/10 p-10 text-center text-slate-500">
+            Client reviews will appear here.
+          </p>
         )}
-
       </div>
-
     </section>
   );
 }
