@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
 const steps = [
@@ -24,11 +25,20 @@ const steps = [
     title: "Launch & Scale",
     description:
       "CI/CD pipelines, performance monitoring, and growth-ready infrastructure from day one.",
-    highlighted: true,
   },
 ];
 
 export default function ProcessSection() {
+  const [activeStep, setActiveStep] = useState(0);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setActiveStep((current) => (current + 1) % steps.length);
+    }, 3000);
+
+    return () => window.clearInterval(timer);
+  }, []);
+
   return (
     <section id="process" className="relative overflow-hidden bg-[#07111d] py-20 text-white sm:py-24 lg:py-28">
       <div className="absolute right-0 top-0 h-full w-[42%] bg-blue-600/[0.08] blur-3xl" />
@@ -57,7 +67,9 @@ export default function ProcessSection() {
           <div className="absolute left-6 top-6 h-[calc(100%-3rem)] w-px bg-gradient-to-b from-cyan-400/40 via-sky-500/35 to-blue-600/40 lg:left-[3.2%] lg:right-[5%] lg:top-[52px] lg:h-px lg:w-auto" />
 
           <div className="relative grid gap-4 lg:grid-cols-4 lg:gap-0">
-            {steps.map((step, index) => (
+            {steps.map((step, index) => {
+              const highlighted = index === activeStep;
+              return (
               <motion.article
                 key={step.number}
                 initial={{ opacity: 0, y: 26 }}
@@ -65,14 +77,14 @@ export default function ProcessSection() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.55, delay: index * 0.1 }}
                 className={`relative pl-20 lg:min-h-[240px] lg:px-6 lg:pb-7 lg:pt-7 ${
-                  step.highlighted
+                  highlighted
                     ? "rounded-3xl border border-cyan-400/30 bg-cyan-950/25 py-7 pr-6 shadow-[0_20px_60px_rgba(6,182,212,.1)] lg:-mt-5 lg:min-h-[240px] lg:py-7"
                     : "py-5 pr-3"
                 }`}
               >
                 <div
                   className={`absolute left-0 top-4 z-10 flex h-12 w-12 items-center justify-center rounded-full border text-sm font-bold lg:static lg:mb-5 ${
-                    step.highlighted
+                    highlighted
                       ? "border-cyan-300/40 bg-gradient-to-br from-cyan-400 to-blue-600 text-white shadow-[0_0_24px_rgba(34,211,238,.35)]"
                       : "border-slate-700 bg-[#1a1f2c] text-slate-400"
                   }`}
@@ -80,14 +92,14 @@ export default function ProcessSection() {
                   {step.number}
                 </div>
 
-                <h3 className={`text-lg font-bold ${step.highlighted ? "text-white" : "text-slate-300"}`}>
+                <h3 className={`text-lg font-bold ${highlighted ? "text-white" : "text-slate-300"}`}>
                   {step.title}
                 </h3>
-                <p className={`mt-3 max-w-[290px] text-[15px] leading-[1.75] ${step.highlighted ? "text-slate-300" : "text-slate-500"}`}>
+                <p className={`mt-3 max-w-[290px] text-[15px] leading-[1.75] ${highlighted ? "text-slate-300" : "text-slate-500"}`}>
                   {step.description}
                 </p>
               </motion.article>
-            ))}
+            )})}
           </div>
         </div>
       </div>
