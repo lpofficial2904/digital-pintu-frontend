@@ -112,7 +112,7 @@ export default function WhyChooseUs() {
     return (
         <section ref={ref} className="bg-[#07111d] py-28 overflow-hidden"
         >
-            <div className="max-w-7xl mx-auto px-6">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6">
 
                 <div className="grid lg:grid-cols-2 gap-16 items-start">
 
@@ -129,7 +129,7 @@ export default function WhyChooseUs() {
               // WHY NEXCORE
                         </p>
 
-                        <h2 className="text-5xl md:text-6xl font-bold leading-tight text-white">
+                        <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight text-white">
 
                             Built for{" "}
 
@@ -180,7 +180,7 @@ export default function WhyChooseUs() {
                                             scale: 1.02,
                                             transition: { duration: 0.3 },
                                         }}
-                                        className="group relative overflow-hidden border border-[#1f2b3d] bg-[#0d1625] p-6 flex items-start gap-5 rounded-lg transition-all duration-500 hover:border-cyan-400 hover:shadow-[0_0_30px_rgba(34,211,238,0.15)]"
+                                        className="group relative overflow-hidden border border-[#1f2b3d] bg-[#0d1625] p-4 sm:p-6 flex items-start gap-4 sm:gap-5 rounded-lg transition-all duration-500 hover:border-cyan-400 hover:shadow-[0_0_30px_rgba(34,211,238,0.15)]"
                                     >
                                         {/* Hover Glow */}
                                         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-r from-cyan-500/5 via-transparent to-violet-500/5"></div>
@@ -226,13 +226,13 @@ export default function WhyChooseUs() {
 
                     {/* RIGHT */}
 
-                    <div className="grid grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
 
                         {stats.map((item, index) => (
 
                             <div
                                 key={index}
-                                className="bg-[#111b2a] border border-[#223046] p-8 hover:border-cyan-500 transition-all duration-300"
+                                className="bg-[#111b2a] border border-[#223046] p-6 sm:p-8 hover:border-cyan-500 transition-all duration-300"
                             >
 
                                 <p className="text-xs tracking-[3px] text-gray-500 uppercase mb-6">

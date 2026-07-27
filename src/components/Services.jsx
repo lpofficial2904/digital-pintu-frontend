@@ -5,9 +5,43 @@ import { motion } from "framer-motion";
 import { FaArrowRight } from "react-icons/fa";
 import iconMap, { FaCode } from "../utils/iconMapper";
 import Navbar from "./Navbar";
+import seoImage from "../assets/service-images/search-engine-optimization.jpg";
+import ecommerceImage from "../assets/service-images/e-commerce-website-development.jpg";
+import maintenanceImage from "../assets/service-images/website-maintenance-technical-support.jpg";
+import aiImage from "../assets/service-images/ai-machine-learning.jpg";
+import mobileImage from "../assets/service-images/mobile-app-development.jpg";
+import webDevelopmentImage from "../assets/service-images/website-design-development.jpg";
+import hostingImage from "../assets/service-images/domain-hosting-business-email.jpg";
+import socialMediaImage from "../assets/service-images/social-media-management-marketing.jpg";
+import paidAdsImage from "../assets/service-images/google-meta-ads.jpg";
+import localBusinessImage from "../assets/service-images/google-business-profile.jpg";
 
 // const API_URL = "http://localhost:5000/api/services";
 const API_URL = "https://digital-pintu-backend.onrender.com/api/services";
+
+const serviceImageFallbacks = [
+  { keywords: ["seo", "search engine"], image: seoImage },
+  { keywords: ["e-commerce", "ecommerce", "shopping"], image: ecommerceImage },
+  { keywords: ["maintenance", "technical support"], image: maintenanceImage },
+  { keywords: ["ai", "machine learning", "artificial intelligence"], image: aiImage },
+  { keywords: ["mobile", "app development"], image: mobileImage },
+  { keywords: ["website", "web development", "web design"], image: webDevelopmentImage },
+  { keywords: ["domain", "hosting", "server", "business email"], image: hostingImage },
+  { keywords: ["social media"], image: socialMediaImage },
+  { keywords: ["google ads", "meta", "advertising", "marketing"], image: paidAdsImage },
+  { keywords: ["google business", "local business", "maps"], image: localBusinessImage },
+];
+
+const defaultServiceImage = webDevelopmentImage;
+
+const getServiceCardImage = (service) => {
+  const searchableText = `${service.title || ""} ${service.category || ""}`.toLowerCase();
+  return (
+    serviceImageFallbacks.find(({ keywords }) =>
+      keywords.some((keyword) => searchableText.includes(keyword))
+    )?.image || service.image || defaultServiceImage
+  );
+};
 
 export default function Services() {
   const [services, setServices] = useState([]);
@@ -50,9 +84,22 @@ export default function Services() {
             {services.map((service, index) => {
               const Icon = iconMap[service.icon] || FaCode;
               const summary = service.shortDescription || service.description;
+              const serviceCardImage = getServiceCardImage(service);
               return <motion.div key={service._id || service.slug} initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: index * 0.08 }} whileHover={{ y: -12 }} className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl transition-all duration-500 hover:border-cyan-400/50 hover:shadow-[0_20px_60px_rgba(34,211,238,.18)]">
                 <div className="absolute -top-24 left-1/2 h-52 w-52 -translate-x-1/2 rounded-full bg-cyan-400/10 opacity-0 blur-3xl transition duration-500 group-hover:opacity-100" />
-                {service.image && <img src={service.image} alt="" className="relative h-48 w-full object-cover" />}
+                <div className="relative h-48 overflow-hidden bg-[#0b1625]">
+                  <img
+                    src={serviceCardImage}
+                    alt={`${service.title} service`}
+                    loading="lazy"
+                    onError={(event) => {
+                      event.currentTarget.onerror = null;
+                      event.currentTarget.src = defaultServiceImage;
+                    }}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#07111d] via-transparent to-cyan-500/10" />
+                </div>
                 <div className="relative p-8">
                   {/* Status is derived from MongoDB; public API filtering means only Active appears here. */}
                   <span className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-300"><span>🟢</span> Active</span>

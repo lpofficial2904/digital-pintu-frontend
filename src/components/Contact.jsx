@@ -1081,7 +1081,7 @@ viewport={{
 once:true
 }}
 
-className="relative overflow-hidden rounded-[40px] bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-700 p-16 text-center"
+className="relative overflow-hidden rounded-[28px] bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-700 p-6 text-center sm:rounded-[40px] sm:p-10 lg:p-16"
 
 >
 
@@ -1119,7 +1119,7 @@ className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-cyan-300/20 bl
 
 <div className="relative z-10">
 
-<h2 className="text-5xl font-black">
+<h2 className="text-3xl font-black sm:text-4xl lg:text-5xl">
 
 Let's Build Your Dream Project
 
@@ -1147,7 +1147,7 @@ scale:.95
 
 href={phoneHref}
 
-className="px-10 py-5 rounded-full bg-white text-slate-900 font-bold"
+className="w-full rounded-full bg-white px-6 py-4 font-bold text-slate-900 sm:w-auto sm:px-10 sm:py-5"
 
 >
 
@@ -1167,7 +1167,7 @@ scale:.95
 
 href={emailHref}
 
-className="px-10 py-5 rounded-full border border-white text-white font-bold"
+className="w-full rounded-full border border-white px-6 py-4 font-bold text-white sm:w-auto sm:px-10 sm:py-5"
 
 >
 

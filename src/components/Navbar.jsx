@@ -47,6 +47,22 @@ const navLinks = [
   { title: "Contact", path: "/#contact" },
 ];
 
+const WEBSITE_PAGES_API = `${import.meta.env.VITE_API_URL || "https://digital-pintu-backend.onrender.com"}/api/website-pages`;
+
+const getPagePath = (page) => {
+  const knownPaths = {
+    home: "/#home",
+    services: "/services",
+    process: "/#process",
+    blogs: "/blogs",
+    reviews: "/#reviews",
+    contact: "/#contact",
+    about: "/about",
+    careers: "/careers",
+  };
+  return knownPaths[page.key] || `/pages/${page.slug}`;
+};
+
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -60,6 +76,7 @@ export default function Navbar() {
   const [serviceOpen, setServiceOpen] = useState(false);
   const [active, setActive] = useState("Home");
   const [scrolled, setScrolled] = useState(false);
+  const [managedNavLinks, setManagedNavLinks] = useState(navLinks);
 
   // Smooth scroll handler
   const scrollToSection = (id, title) => {
@@ -140,7 +157,7 @@ export default function Navbar() {
       if (animationFrame) return;
 
       animationFrame = window.requestAnimationFrame(() => {
-        setScrolled(window.scrollY > 12);
+        setScrolled(window.scrollY > 1);
         animationFrame = null;
       });
     };
@@ -151,6 +168,29 @@ export default function Navbar() {
       window.removeEventListener("scroll", handleScroll);
       if (animationFrame) window.cancelAnimationFrame(animationFrame);
     };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    const fetchNavigation = async () => {
+      try {
+        const { data } = await axios.get(WEBSITE_PAGES_API);
+        if (!active || !Array.isArray(data)) return;
+        setManagedNavLinks(
+          data
+            .filter((page) => page.showInNavbar)
+            .map((page) => ({
+              title: page.navLabel || page.title,
+              path: getPagePath(page),
+              mega: page.key === "services",
+            }))
+        );
+      } catch (error) {
+        console.error("Unable to fetch managed navigation:", error);
+      }
+    };
+    fetchNavigation();
+    return () => { active = false; };
   }, []);
 
   return (
@@ -164,21 +204,22 @@ export default function Navbar() {
     >
       <motion.div
         animate={{
-          width: scrolled ? "92%" : "96%",
-          marginTop: scrolled ? 12 : 8,
+          width: scrolled ? "88%" : "95%",
+          marginTop: scrolled ? 16 : 8,
         }}
         transition={{
-          type: "tween",
-          duration: 0.18,
-          ease: "easeOut",
+          type: "spring",
+          stiffness: 800,
+          damping: 36,
+          mass: 0.35,
         }}
-        className={`max-w-[1500px] rounded-full transition-colors duration-200 ${
+        className={`rounded-full transition-colors duration-200 ${
           scrolled
             ? "bg-[#07111d]/75 backdrop-blur-2xl border border-white/10 shadow-[0_20px_60px_rgba(0,255,255,.10)]"
             : "bg-[#07111d]/35 backdrop-blur-xl"
         }`}
       >
-        <div className="flex h-16 items-center justify-between px-4 sm:h-20 sm:px-8">
+        <div className="flex h-20 items-center justify-between px-4 sm:px-8">
           {/* Logo */}
           <Link className="flex min-w-0 items-center gap-2 sm:gap-3" to="/">
             <motion.div
@@ -204,7 +245,7 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-2">
-            {navLinks.map((item) =>
+            {managedNavLinks.map((item) =>
               item.mega ? (
                 <div
                   key={item.title}
@@ -417,10 +458,10 @@ export default function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.45 }}
-            className="absolute top-24 max-h-[calc(100vh-7rem)] w-[calc(100%-1rem)] overflow-y-auto rounded-3xl border border-white/10 bg-[#08111f]/95 backdrop-blur-3xl sm:top-28 sm:w-[95%] lg:hidden"
+            className="absolute top-28 max-h-[calc(100vh-8rem)] w-[95%] overflow-y-auto rounded-3xl border border-white/10 bg-[#08111f]/95 backdrop-blur-3xl lg:hidden"
           >
-            <div className="flex min-w-0 flex-col gap-2 p-4 sm:p-6">
-              {navLinks.map((item) =>
+            <div className="flex flex-col gap-2 p-6">
+              {managedNavLinks.map((item) =>
                 item.mega ? (
                   <div key={item.title}>
                     <div className="w-full flex items-center justify-between rounded-xl px-4 py-4 text-gray-300 hover:bg-white/5">
