@@ -66,7 +66,7 @@ export default function TechMarquee() {
         }}
         transition={{
           ease: "linear",
-          duration: 30,
+          duration: 60,
           repeat: Infinity,
         }}
       >
