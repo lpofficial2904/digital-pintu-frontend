@@ -1,8 +1,12 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import heroDashboardVisual from "../assets/hero-dashboard-visual.png";
+import useSiteSettings from "../utils/useSiteSettings";
 
 export default function Hero() {
+  const { contentSettings } = useSiteSettings();
+  const hero = contentSettings.hero;
   return (
     <section id="home" className="relative min-h-screen overflow-hidden bg-[#070B14] pt-32">
       {/* Grid Background */}
@@ -31,29 +35,29 @@ export default function Hero() {
           className="min-w-0 max-w-full"
         >
           <div className="mb-8 flex w-full max-w-full items-center justify-center whitespace-normal break-words rounded-md border border-cyan-500/40 bg-cyan-500/10 px-3 py-2 text-center text-[9px] uppercase leading-5 tracking-[1.5px] text-cyan-300 sm:inline-flex sm:w-auto sm:px-5 sm:text-xs sm:tracking-[3px]">
-            • Digital Pintu IT Solutions • Est. 2014
+            {hero.badge}
           </div>
 
           <h1 className="max-w-full break-words text-[2.15rem] font-bold leading-tight min-[400px]:text-4xl sm:text-5xl">
             <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-              Architecting
+              {hero.titleAccent}
             </span>
 
             <br />
 
             <span className="text-white">
-              The Next-Gen
+              {hero.titleMain}
             </span>
 
             <br />
 
             <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
-              Digital Future.
+              {hero.titleGradient}
             </span>
           </h1>
 
           <p className="mt-8 max-w-xl break-words text-base leading-7 text-gray-400 sm:text-lg sm:leading-8">
-           Transforming ideas into powerful digital experiences with innovative websites, mobile apps, UI/UX design, SEO, and result-driven marketing solutions that fuel business success.
+           {hero.description}
           </p>
 
           <div className="mt-10 flex min-w-0 flex-wrap gap-5">
@@ -66,7 +70,7 @@ export default function Hero() {
               whileTap={{ scale: .95 }}
               className="flex w-full items-center justify-center gap-2 rounded bg-cyan-400 px-5 py-4 font-bold text-black sm:w-auto sm:px-8"
             >
-              <Link to="/contact">Start Your Project</Link>
+              <Link to={hero.primaryButtonUrl}>{hero.primaryButtonLabel}</Link>
               <ArrowRight size={18} />
             </motion.button>
 
@@ -75,7 +79,7 @@ export default function Hero() {
               className="w-full rounded-lg border border-purple-500 px-5 py-4 text-white hover:bg-purple-500/10 sm:w-auto sm:px-8"
             >
               {/* Explore Services */}
-              <Link to="/services">Explore Services</Link>
+              <Link to={hero.secondaryButtonUrl}>{hero.secondaryButtonLabel}</Link>
 
             </motion.button>
 
@@ -84,27 +88,76 @@ export default function Hero() {
           {/* Stats */}
 
           <div className="mt-16 grid grid-cols-3 gap-4 sm:flex sm:gap-12">
-
-            <div>
-              <h2 className="text-3xl font-bold text-cyan-400 sm:text-4xl">500+</h2>
-              <p className="text-gray-500">Projects</p>
-            </div>
-
-            <div>
-              <h2 className="text-3xl font-bold text-blue-400 sm:text-4xl">99.9%</h2>
-              <p className="text-gray-500">Uptime</p>
-            </div>
-
-            <div>
-              <h2 className="text-3xl font-bold text-purple-400 sm:text-4xl">150+</h2>
-              <p className="text-gray-500">Clients</p>
-            </div>
-
+            {hero.stats.map((item, index) => (
+              <div key={`${item.label}-${index}`}>
+                <h2 className={`text-3xl font-bold sm:text-4xl ${index === 0 ? "text-cyan-400" : index === 1 ? "text-blue-400" : "text-purple-400"}`}>{item.value}</h2>
+                <p className="text-gray-500">{item.label}</p>
+              </div>
+            ))}
           </div>
         </motion.div>
 
-        {/* Right Side Code Card */}
+        {/* Previous code showcase is temporarily disabled below. */}
+        <motion.div
+          initial={{ opacity: 0, x: 80 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: .8, delay: .2 }}
+          className="relative mx-auto w-full max-w-[590px] px-4 py-16 sm:px-12 lg:px-8"
+        >
+          <div className="absolute inset-x-16 top-20 h-72 rounded-full bg-cyan-500/20 blur-[100px]" />
+          <div className="absolute bottom-8 right-12 h-44 w-44 rounded-full bg-purple-600/20 blur-[90px]" />
 
+          <motion.div
+            animate={{ y: [0, -6, 0] }}
+            transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+            className="relative overflow-hidden rounded-[28px] border border-cyan-400/30 bg-[#0d1625] shadow-[0_25px_90px_rgba(6,182,212,.18)]"
+          >
+            <img src={heroDashboardVisual} alt="Modern analytics dashboard" className="aspect-[4/3] w-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#07111d] via-transparent to-cyan-500/5" />
+            <div className="absolute inset-x-0 bottom-0 border-t border-white/10 bg-[#111827]/90 px-6 py-5 backdrop-blur-xl">
+              <h3 className="font-bold text-white">Digital Growth Dashboard</h3>
+              <p className="mt-1 text-sm text-gray-400">Analytics · Automation · Performance</p>
+            </div>
+          </motion.div>
+
+          <motion.div
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 1, repeat: Infinity, repeatDelay: 1, ease: "easeInOut" }}
+            className="absolute left-0 top-4 z-10 rounded-2xl border border-cyan-400/30 bg-[#111827]/95 p-4 shadow-[0_18px_45px_rgba(6,182,212,.18)] backdrop-blur-xl sm:-left-4 sm:top-20"
+          >
+            <p className="text-[10px] uppercase tracking-wider text-gray-400">Active Projects</p>
+            <p className="mt-1 text-2xl font-black text-cyan-400">48+</p>
+            <p className="mt-1 text-xs text-emerald-400">↑ 18% this month</p>
+          </motion.div>
+
+          <motion.div
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 1, delay: .3, repeat: Infinity, repeatDelay: 1, ease: "easeInOut" }}
+            className="absolute right-0 top-8 z-10 rounded-2xl border border-purple-400/40 bg-[#111827]/95 p-4 shadow-[0_18px_45px_rgba(168,85,247,.16)] backdrop-blur-xl sm:-right-5 sm:top-32"
+          >
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-purple-400">✦ New Project</p>
+            <p className="mt-1 text-sm font-bold text-white">AI Automation</p>
+            <p className="mt-1 text-xs text-gray-400">Kick-off: Tomorrow</p>
+          </motion.div>
+
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 1, delay: .6, repeat: Infinity, repeatDelay: 1, ease: "easeInOut" }}
+            className="absolute -bottom-1 right-2 z-10 min-w-44 rounded-2xl border border-blue-400/35 bg-[#111827]/95 p-4 shadow-[0_18px_45px_rgba(59,130,246,.18)] backdrop-blur-xl sm:-right-1 sm:bottom-8"
+          >
+            <p className="text-[10px] uppercase tracking-wider text-gray-400">Project Status</p>
+            <p className="mt-1 text-sm font-bold text-white">Business Platform</p>
+            <div className="mt-3 flex items-center gap-3">
+              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/10">
+                <motion.div initial={{ width: 0 }} animate={{ width: "82%" }} transition={{ duration: 1.2, delay: .8 }} className="h-full rounded-full bg-gradient-to-r from-purple-500 via-blue-500 to-cyan-400" />
+              </div>
+              <span className="text-xs font-bold text-purple-400">82%</span>
+            </div>
+          </motion.div>
+        </motion.div>
+
+        {/* Right Side Code Card */}
+        {false && (
         <motion.div
           initial={{ opacity: 0, x: 80 }}
           animate={{ opacity: 1, x: 0 }}
@@ -193,6 +246,7 @@ export default function Hero() {
 
           </div>
         </motion.div>
+        )}
 
       </div>
     </section>

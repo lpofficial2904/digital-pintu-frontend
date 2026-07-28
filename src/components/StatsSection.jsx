@@ -7,34 +7,9 @@ import {
 } from "react-icons/fi";
 import { useInView } from "react-intersection-observer";
 import { useEffect, useState } from "react";
+import useSiteSettings from "../utils/useSiteSettings";
 
-const stats = [
-  {
-    icon: FiCheckCircle,
-    end: 500,
-    suffix: "+",
-    title: "Projects Delivered",
-  },
-  {
-    icon: FiServer,
-    end: 99.9,
-    decimals: 1,
-    suffix: "%",
-    title: "Uptime SLA",
-  },
-  {
-    icon: FiGlobe,
-    end: 150,
-    suffix: "+",
-    title: "Enterprise Clients",
-  },
-  {
-    icon: FiCpu,
-    end: 12,
-    suffix: "yrs",
-    title: "Industry Experience",
-  },
-];
+const statIcons = [FiCheckCircle, FiServer, FiGlobe, FiCpu];
 
 /* ---------------- Counter ---------------- */
 
@@ -85,6 +60,8 @@ function AnimatedCounter({
 /* ---------------- Component ---------------- */
 
 export default function StatsSection() {
+  const { contentSettings } = useSiteSettings();
+  const stats = contentSettings.stats;
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.3,
@@ -108,8 +85,8 @@ export default function StatsSection() {
           transition={{ duration: .8 }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border border-[#1e293b] bg-[#0b1220]"
         >
-          {stats.map((item, index) => {
-            const Icon = item.icon;
+            {stats.map((item, index) => {
+            const Icon = statIcons[index % statIcons.length];
 
             return (
               <motion.div
@@ -155,7 +132,7 @@ export default function StatsSection() {
                 <h2 className="relative text-6xl font-extrabold leading-none bg-gradient-to-r from-cyan-400 via-sky-400 to-violet-500 bg-clip-text text-transparent">
 
                   <AnimatedCounter
-                    end={item.end}
+                    end={Number(item.value)}
                     duration={4500}
                     decimals={item.decimals || 0}
                     suffix={item.suffix}

@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { useEffect, useState } from "react";
+import useSiteSettings from "../utils/useSiteSettings";
 
 import {
     FiZap,
@@ -105,6 +106,10 @@ const stats = [
 ];
 
 export default function WhyChooseUs() {
+    const { contentSettings } = useSiteSettings();
+    const section = contentSettings.whyChooseUs;
+    const managedFeatures = section.features || features;
+    const featureIcons = [FiZap, FiLock, FiDatabase, FiGlobe];
     const { ref, inView } = useInView({
         triggerOnce: true,
         threshold: 0.35,
@@ -126,42 +131,20 @@ export default function WhyChooseUs() {
                     >
 
                         <p className="uppercase tracking-[4px] text-cyan-400 text-sm font-semibold mb-6">
-              // WHY NEXCORE
+              {section.eyebrow}
                         </p>
 
-                        <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight text-white">
+                        <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight bg-gradient-to-r from-white via-cyan-300 to-violet-500 bg-clip-text text-transparent">{section.heading}</h2>
 
-                            Built for{" "}
-
-                            <span className="bg-gradient-to-r from-cyan-400 via-sky-500 to-violet-500 bg-clip-text text-transparent">
-                                enterprises
-                            </span>
-
-                            <br />
-
-                            that can't afford{" "}
-
-                            <span className="bg-gradient-to-r from-cyan-400 via-sky-500 to-violet-500 bg-clip-text text-transparent">
-                                failure.
-                            </span>
-
-                        </h2>
-
-                        <p className="mt-8 text-gray-400 leading-8 text-lg max-w-xl">
-                            We don't just deliver code — we architect resilient
-                            systems engineered for the demands of modern
-                            business. Every engagement comes with SLA
-                            guarantees, dedicated engineers, and ongoing
-                            support.
-                        </p>
+                        <p className="mt-8 text-gray-400 leading-8 text-lg max-w-xl">{section.description}</p>
 
                         {/* Features */}
 
                         <div className="mt-14 space-y-5">
 
-                            {features.map((item, index) => {
+                            {managedFeatures.map((item, index) => {
 
-                                const Icon = item.icon;
+                                const Icon = featureIcons[index % featureIcons.length];
 
                                 return (
 

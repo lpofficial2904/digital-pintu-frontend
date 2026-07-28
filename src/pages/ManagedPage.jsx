@@ -4,11 +4,118 @@ import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { toast } from "sonner";
+import { Globe2, Handshake, Rocket, Target, ArrowRight } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import useSiteSettings from "../utils/useSiteSettings";
 
 const API_URL = `${import.meta.env.VITE_API_URL || "https://digital-pintu-backend.onrender.com"}/api/website-pages`;
 const CAREER_APPLICATIONS_API = `${import.meta.env.VITE_API_URL || "https://digital-pintu-backend.onrender.com"}/api/career-applications`;
+
+const aboutCards = [
+  {
+    icon: Globe2,
+    title: "Why We Exist",
+    description: "We help ambitious businesses turn complex ideas into reliable, user-friendly digital products that create measurable value.",
+    note: "Technology built around real business goals.",
+  },
+  {
+    icon: Target,
+    title: "Our Mission",
+    description: "To deliver high-performing websites, mobile apps and digital experiences that help brands grow, compete and lead online.",
+    note: "Every project is focused on performance and results.",
+  },
+  {
+    icon: Rocket,
+    title: "Our Vision",
+    description: "To become a trusted technology partner for startups and growing businesses building the next generation of digital solutions.",
+    note: "Long-term partnerships. Future-ready products.",
+  },
+  {
+    icon: Handshake,
+    title: "Our Work Culture",
+    description: "We combine clear communication, creative thinking and engineering discipline to deliver quality without unnecessary complexity.",
+    note: "Transparent collaboration from idea to launch.",
+  },
+];
+
+function AboutPage() {
+  const { contentSettings } = useSiteSettings();
+  const about = contentSettings.about;
+  return (
+    <section className="relative mx-auto max-w-6xl">
+      <div className="pointer-events-none absolute left-1/2 top-16 h-80 w-80 -translate-x-1/2 rounded-full bg-cyan-500/15 blur-[130px]" />
+      <div className="pointer-events-none absolute -right-32 top-96 h-64 w-64 rounded-full bg-purple-600/10 blur-[120px]" />
+
+      <motion.header
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: .65 }}
+        className="relative mx-auto max-w-4xl text-center"
+      >
+        <p className="text-xs font-semibold uppercase tracking-[.3em] text-cyan-400">// {about.eyebrow}</p>
+        <h1 className="mt-5 text-4xl font-black leading-[1.08] tracking-tight sm:text-6xl">
+          {about.heading}
+          <span className="block bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+            {about.accentHeading}
+          </span>
+        </h1>
+        <p className="mx-auto mt-6 max-w-3xl text-base leading-7 text-slate-400 sm:text-lg">
+          {about.description}
+        </p>
+      </motion.header>
+
+      <div className="relative mt-14 grid gap-5 md:grid-cols-2">
+        {(about.cards || aboutCards).map((card, index) => {
+          const Icon = aboutCards[index % aboutCards.length].icon;
+          return (
+            <motion.article
+              key={card.title}
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: .25 }}
+              transition={{ delay: index * .08, duration: .5 }}
+              whileHover={{ y: -5 }}
+              className="group relative overflow-hidden rounded-lg border border-[#1f2b3d] bg-[#0d1625] p-7 transition-all duration-300 hover:border-cyan-400 hover:shadow-[0_0_30px_rgba(34,211,238,.15)] sm:p-8"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-violet-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+              <div className="relative">
+                <div className="flex h-12 w-12 items-center justify-center rounded-md border border-cyan-500 text-cyan-400">
+                  <Icon size={22} strokeWidth={1.8} />
+                </div>
+                <h2 className="mt-6 text-xl font-bold text-white">{card.title}</h2>
+                <p className="mt-3 leading-7 text-gray-400">{card.description}</p>
+                <p className="mt-4 text-sm font-semibold text-cyan-400">{card.note}</p>
+              </div>
+              <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-gradient-to-r from-cyan-400 to-violet-500 transition-all duration-500 group-hover:w-full" />
+            </motion.article>
+          );
+        })}
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="relative mt-6 flex flex-col items-start justify-between gap-6 overflow-hidden rounded-lg border border-[#223046] bg-[#111b2a] p-7 transition-colors hover:border-cyan-500 sm:flex-row sm:items-center sm:p-9"
+      >
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[.24em] text-cyan-400">What we bring together</p>
+          <h2 className="mt-3 text-2xl font-bold sm:text-3xl">Strategy, design and technology—under one roof.</h2>
+          <p className="mt-3 max-w-2xl leading-7 text-slate-400">
+            From websites and mobile apps to SEO, automation and digital marketing, our team builds connected solutions for sustainable growth.
+          </p>
+        </div>
+        <Link
+          to="/services"
+          className="inline-flex shrink-0 items-center gap-2 rounded bg-cyan-400 px-6 py-3.5 font-bold text-black transition hover:bg-cyan-300 hover:shadow-[0_0_30px_rgba(0,255,255,.25)]"
+        >
+          Explore Services <ArrowRight size={18} />
+        </Link>
+      </motion.div>
+    </section>
+  );
+}
 
 export default function ManagedPage({ pageSlug }) {
   const params = useParams();
@@ -55,15 +162,24 @@ export default function ManagedPage({ pageSlug }) {
     setSubmitting(true);
     setSubmitMessage("");
     try {
-      await axios.post(CAREER_APPLICATIONS_API, { jobId: selectedJob, answers, attachments: Object.values(attachments) });
-      toast.success("Your application has been submitted successfully.");
+      const request = axios.post(CAREER_APPLICATIONS_API, {
+        jobId: selectedJob,
+        answers,
+        attachments: Object.values(attachments),
+      });
+      await toast.promise(request, {
+        loading: "Submitting your application...",
+        success: ({ data }) => data.confirmationEmailSent
+          ? "Application submitted. A confirmation email has been sent."
+          : "Your application has been submitted successfully.",
+        error: (requestError) => requestError.response?.data?.message || "Unable to submit your application. Please try again.",
+      });
       setSubmitMessage("Your application has been submitted successfully.");
       setAnswers({});
       setAttachments({});
       setSelectedJob("");
     } catch (requestError) {
       const message = requestError.response?.data?.message || "Unable to submit your application. Please try again.";
-      toast.error(message);
       setSubmitMessage(message);
     } finally {
       setSubmitting(false);
@@ -132,7 +248,7 @@ export default function ManagedPage({ pageSlug }) {
               <title>{page.metaTitle || `${page.title} | Digital Pintu`}</title>
               <meta name="description" content={page.metaDescription || page.intro || page.content?.slice(0, 155)} />
             </Helmet>
-            <section className="relative mx-auto max-w-6xl">
+            {slug === "about" ? <AboutPage /> : <section className="relative mx-auto max-w-6xl">
               <div className="absolute left-1/2 top-0 h-80 w-80 -translate-x-1/2 rounded-full bg-cyan-500/10 blur-[120px]" />
               <motion.header initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} className="relative mx-auto max-w-4xl text-center">
                 <span className="inline-flex rounded-full border border-cyan-400/30 bg-cyan-500/10 px-5 py-2 text-xs font-semibold uppercase tracking-[.25em] text-cyan-300">
@@ -230,7 +346,7 @@ export default function ManagedPage({ pageSlug }) {
                 </section>
                 </>
               )}
-            </section>
+            </section>}
           </>
         )}
       </main>

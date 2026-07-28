@@ -281,25 +281,29 @@ Call Now
 
 <div className="flex gap-5 mt-12 text-3xl">
 
-<motion.a
+{settings.facebookUrl && <motion.a
 whileHover={{y:-8}}
-href="#"
+href={settings.facebookUrl}
+target="_blank"
+rel="noopener noreferrer"
 className="text-cyan-400"
 >
 
 <FaFacebook/>
 
-</motion.a>
+</motion.a>}
 
-<motion.a
+{settings.instagramUrl && <motion.a
 whileHover={{y:-8}}
-href="#"
+href={settings.instagramUrl}
+target="_blank"
+rel="noopener noreferrer"
 className="text-pink-400"
 >
 
 <FaInstagram/>
 
-</motion.a>
+</motion.a>}
 
 <motion.a
   whileHover={{ y: -8 }}
@@ -311,15 +315,17 @@ className="text-pink-400"
   <FaWhatsapp />
 </motion.a>
 
-<motion.a
+{settings.linkedinUrl && <motion.a
 whileHover={{y:-8}}
-href="#"
+href={settings.linkedinUrl}
+target="_blank"
+rel="noopener noreferrer"
 className="text-blue-400"
 >
 
 <FaLinkedin/>
 
-</motion.a>
+</motion.a>}
 
 </div>
 

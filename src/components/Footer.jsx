@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import axios from "axios";
 import digitalPintuLogo from "../assets/digital-pintu-logo-new.png";
 import useSiteSettings from "../utils/useSiteSettings";
 
@@ -31,59 +32,58 @@ const services = [
   "Graphic Design",
 ];
 
-const quickLinks = [
-  {
-    title: "Home",
-    path: "/",
-  },
-  {
-    title: "About",
-    path: "/about",
-  },
-  {
-    title: "Services",
-    path: "/services",
-  },
-  // {
-  //   title: "Portfolio",
-  //   path: "/portfolio",
-  // },
-  {
-    title: "Contact",
-    path: "/contact",
-  },
-];
+const WEBSITE_PAGES_API = `${import.meta.env.VITE_API_URL || "https://digital-pintu-backend.onrender.com"}/api/website-pages`;
+
+const getPagePath = (page) => {
+  const knownPaths = {
+    home: "/#home",
+    services: "/services",
+    process: "/#process",
+    blogs: "/blogs",
+    reviews: "/#reviews",
+    contact: "/#contact",
+    about: "/about",
+    careers: "/careers",
+  };
+  return knownPaths[page.key] || `/pages/${page.slug}`;
+};
 
 const socials = [
   {
     icon: <FaFacebookF />,
     color: "hover:bg-blue-600",
-    url: "https://www.facebook.com/pintuattends",
+    field: "facebookUrl",
+    label: "Facebook",
   },
   {
     icon: <FaInstagram />,
     color: "hover:bg-pink-600",
-    url: "#",
+    field: "instagramUrl",
+    label: "Instagram",
   },
   {
     icon: <FaTwitter />,
     color: "hover:bg-sky-500",
-    url: "https://x.com/pintuattends",
+    field: "twitterUrl",
+    label: "X / Twitter",
   },
   {
     icon: <FaLinkedinIn />,
     color: "hover:bg-blue-700",
-    url: "#",
+    field: "linkedinUrl",
+    label: "LinkedIn",
   },
   {
     icon: <FaGithub />,
     color: "hover:bg-gray-700",
-    url: "#",
+    field: "githubUrl",
+    label: "GitHub",
   },
 ];
 
 export default function Footer() {
   const [atTop, setAtTop] = useState(true);
+  const [quickLinks, setQuickLinks] = useState([]);
   const settings = useSiteSettings();
 
   useEffect(() => {
@@ -91,6 +91,28 @@ export default function Footer() {
     updatePosition();
     window.addEventListener("scroll", updatePosition, { passive: true });
     return () => window.removeEventListener("scroll", updatePosition);
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+
+    axios.get(WEBSITE_PAGES_API)
+      .then(({ data }) => {
+        if (!active || !Array.isArray(data)) return;
+        setQuickLinks(
+          data
+            .filter((page) => page.showInNavbar)
+            .map((page) => ({
+              title: page.navLabel || page.title,
+              path: getPagePath(page),
+            }))
+        );
+      })
+      .catch((error) => {
+        console.error("Unable to fetch footer navigation:", error);
+      });
+
+    return () => { active = false; };
   }, []);
 
   const handlePageScroll = () => window.scrollTo({
@@ -296,10 +318,13 @@ export default function Footer() {
                         {/* Social Icons */}
 
             <div className="flex items-center gap-4 mt-8">
-              {socials.map((item, index) => (
+              {socials.filter((item) => settings[item.field]).map((item) => (
                 <motion.a
-                  key={index}
-                  href={item.url}
+                  key={item.field}
+                  href={settings[item.field]}
+                  aria-label={item.label}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   whileHover={{
                     y: -6,
                     scale: 1.1,
