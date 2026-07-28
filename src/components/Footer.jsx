@@ -290,7 +290,7 @@ export default function Footer() {
                 
                 // className="w-16 h-16 rounded-2xl bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 flex items-center justify-center text-2xl font-black text-black"
               >
-                <img src={digitalPintuLogo} width="150"  alt="Logo" />
+                <img src={settings.logoData || digitalPintuLogo} width="150" alt="Digital Pintu Solutions logo" />
                 {/* DP */}
               </motion.div>
 

@@ -4,7 +4,7 @@ export const defaultContentSettings = {
   hero: {
     badge: "Digital Pintu IT Solutions • Est. 2014", titleAccent: "Architecting", titleMain: "The Next-Gen", titleGradient: "Digital Future.",
     description: "Transforming ideas into powerful digital experiences with innovative websites, mobile apps, UI/UX design, SEO, and result-driven marketing solutions that fuel business success.",
-    primaryButtonLabel: "Start Your Project", primaryButtonUrl: "/#contact", secondaryButtonLabel: "Explore Services", secondaryButtonUrl: "/services",
+    primaryButtonLabel: "Start Your Project", primaryButtonUrl: "/contact/", secondaryButtonLabel: "Explore Services", secondaryButtonUrl: "/services",
     stats: [{ value: "500+", label: "Projects" }, { value: "99.9%", label: "Uptime" }, { value: "150+", label: "Clients" }],
   },
   stats: [
@@ -46,6 +46,7 @@ export const defaultSiteSettings = {
   twitterUrl: "https://x.com/pintuattends",
   linkedinUrl: "",
   githubUrl: "",
+  logoData: "",
   contentSettings: defaultContentSettings,
 };
 

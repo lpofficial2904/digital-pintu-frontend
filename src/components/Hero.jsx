@@ -7,6 +7,9 @@ import useSiteSettings from "../utils/useSiteSettings";
 export default function Hero() {
   const { contentSettings } = useSiteSettings();
   const hero = contentSettings.hero;
+  const primaryButtonUrl = !hero.primaryButtonUrl || hero.primaryButtonUrl === "/#contact"
+    ? "/contact/"
+    : hero.primaryButtonUrl;
   return (
     <section id="home" className="relative min-h-screen overflow-hidden bg-[#070B14] pt-32">
       {/* Grid Background */}
@@ -62,17 +65,19 @@ export default function Hero() {
 
           <div className="mt-10 flex min-w-0 flex-wrap gap-5">
 
-            <motion.button
+            <motion.div
               whileHover={{
                 scale: 1.05,
                 boxShadow: "0 0 30px rgba(0,255,255,.35)",
               }}
               whileTap={{ scale: .95 }}
-              className="flex w-full items-center justify-center gap-2 rounded bg-cyan-400 px-5 py-4 font-bold text-black sm:w-auto sm:px-8"
+              className="w-full rounded sm:w-auto"
             >
-              <Link to={hero.primaryButtonUrl}>{hero.primaryButtonLabel}</Link>
-              <ArrowRight size={18} />
-            </motion.button>
+              <Link to={primaryButtonUrl} className="flex w-full items-center justify-center gap-2 rounded bg-cyan-400 px-5 py-4 font-bold text-black sm:px-8">
+                {hero.primaryButtonLabel}
+                <ArrowRight size={18} />
+              </Link>
+            </motion.div>
 
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -116,14 +121,14 @@ export default function Hero() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#07111d] via-transparent to-cyan-500/5" />
             <div className="absolute inset-x-0 bottom-0 border-t border-white/10 bg-[#111827]/90 px-6 py-5 backdrop-blur-xl">
               <h3 className="font-bold text-white">Digital Growth Dashboard</h3>
-              <p className="mt-1 text-sm text-gray-400">Analytics · Automation · Performance</p>
+              <p className="mt-1 text-sm text-gray-400">React.js · Node.js · Tailwind</p>
             </div>
           </motion.div>
 
           <motion.div
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 1, repeat: Infinity, repeatDelay: 1, ease: "easeInOut" }}
-            className="absolute left-0 top-4 z-10 rounded-2xl border border-cyan-400/30 bg-[#111827]/95 p-4 shadow-[0_18px_45px_rgba(6,182,212,.18)] backdrop-blur-xl sm:-left-4 sm:top-20"
+            className="absolute left-0 top-4 z-10 hidden rounded-2xl border border-cyan-400/30 bg-[#111827]/95 p-4 shadow-[0_18px_45px_rgba(6,182,212,.18)] backdrop-blur-xl lg:block lg:-left-4 lg:top-20"
           >
             <p className="text-[10px] uppercase tracking-wider text-gray-400">Active Projects</p>
             <p className="mt-1 text-2xl font-black text-cyan-400">48+</p>
@@ -133,7 +138,7 @@ export default function Hero() {
           <motion.div
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 1, delay: .3, repeat: Infinity, repeatDelay: 1, ease: "easeInOut" }}
-            className="absolute right-0 top-8 z-10 rounded-2xl border border-purple-400/40 bg-[#111827]/95 p-4 shadow-[0_18px_45px_rgba(168,85,247,.16)] backdrop-blur-xl sm:-right-5 sm:top-32"
+            className="absolute right-0 top-8 z-10 hidden rounded-2xl border border-purple-400/40 bg-[#111827]/95 p-4 shadow-[0_18px_45px_rgba(168,85,247,.16)] backdrop-blur-xl lg:block lg:-right-5 lg:top-32"
           >
             <p className="text-[10px] font-semibold uppercase tracking-wider text-purple-400">✦ New Project</p>
             <p className="mt-1 text-sm font-bold text-white">AI Automation</p>
@@ -143,7 +148,7 @@ export default function Hero() {
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 1, delay: .6, repeat: Infinity, repeatDelay: 1, ease: "easeInOut" }}
-            className="absolute -bottom-1 right-2 z-10 min-w-44 rounded-2xl border border-blue-400/35 bg-[#111827]/95 p-4 shadow-[0_18px_45px_rgba(59,130,246,.18)] backdrop-blur-xl sm:-right-1 sm:bottom-8"
+            className="absolute -bottom-1 right-2 z-10 hidden min-w-44 rounded-2xl border border-blue-400/35 bg-[#111827]/95 p-4 shadow-[0_18px_45px_rgba(59,130,246,.18)] backdrop-blur-xl lg:block lg:-right-1 lg:bottom-8"
           >
             <p className="text-[10px] uppercase tracking-wider text-gray-400">Project Status</p>
             <p className="mt-1 text-sm font-bold text-white">Business Platform</p>
