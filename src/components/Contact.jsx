@@ -20,6 +20,8 @@ import {
   FaFacebook,
   FaInstagram,
   FaLinkedin,
+  FaGithub,
+  FaTwitter,
 } from "react-icons/fa";
 import Navbar from "./Navbar";
 import useSiteSettings from "../utils/useSiteSettings";
@@ -281,51 +283,30 @@ Call Now
 
 <div className="flex gap-5 mt-12 text-3xl">
 
-{settings.facebookUrl && <motion.a
-whileHover={{y:-8}}
-href={settings.facebookUrl}
-target="_blank"
-rel="noopener noreferrer"
-className="text-cyan-400"
->
-
-<FaFacebook/>
-
-</motion.a>}
-
-{settings.instagramUrl && <motion.a
-whileHover={{y:-8}}
-href={settings.instagramUrl}
-target="_blank"
-rel="noopener noreferrer"
-className="text-pink-400"
->
-
-<FaInstagram/>
-
-</motion.a>}
-
-<motion.a
-  whileHover={{ y: -8 }}
-  href={whatsappHref}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="text-green-400"
->
-  <FaWhatsapp />
-</motion.a>
-
-{settings.linkedinUrl && <motion.a
-whileHover={{y:-8}}
-href={settings.linkedinUrl}
-target="_blank"
-rel="noopener noreferrer"
-className="text-blue-400"
->
-
-<FaLinkedin/>
-
-</motion.a>}
+{[
+  { label: "Facebook", url: settings.facebookUrl, icon: <FaFacebook />, color: "text-cyan-400" },
+  { label: "Instagram", url: settings.instagramUrl, icon: <FaInstagram />, color: "text-pink-400" },
+  { label: "WhatsApp", url: whatsappHref, icon: <FaWhatsapp />, color: "text-green-400" },
+  { label: "X / Twitter", url: settings.twitterUrl, icon: <FaTwitter />, color: "text-sky-400" },
+  { label: "LinkedIn", url: settings.linkedinUrl, icon: <FaLinkedin />, color: "text-blue-400" },
+  { label: "GitHub", url: settings.githubUrl, icon: <FaGithub />, color: "text-gray-300" },
+].map((social) => (
+  <motion.a
+    key={social.label}
+    whileHover={{ y: -8 }}
+    href={social.url || undefined}
+    aria-label={social.label}
+    aria-disabled={!social.url}
+    target={social.url ? "_blank" : undefined}
+    rel={social.url ? "noopener noreferrer" : undefined}
+    onClick={(event) => {
+      if (!social.url) event.preventDefault();
+    }}
+    className={social.color}
+  >
+    {social.icon}
+  </motion.a>
+))}
 
 </div>
 

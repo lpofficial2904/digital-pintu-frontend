@@ -318,13 +318,20 @@ export default function Footer() {
                         {/* Social Icons */}
 
             <div className="flex items-center gap-4 mt-8">
-              {socials.filter((item) => settings[item.field]).map((item) => (
+              {socials.map((item) => {
+                const url = settings[item.field];
+
+                return (
                 <motion.a
                   key={item.field}
-                  href={settings[item.field]}
+                  href={url || undefined}
                   aria-label={item.label}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  aria-disabled={!url}
+                  target={url ? "_blank" : undefined}
+                  rel={url ? "noopener noreferrer" : undefined}
+                  onClick={(event) => {
+                    if (!url) event.preventDefault();
+                  }}
                   whileHover={{
                     y: -6,
                     scale: 1.1,
@@ -336,7 +343,8 @@ export default function Footer() {
                 >
                   {item.icon}
                 </motion.a>
-              ))}
+                );
+              })}
             </div>
           </motion.div>
 
