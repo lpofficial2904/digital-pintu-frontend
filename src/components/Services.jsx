@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import { motion } from "framer-motion";
 import { FaArrowRight } from "react-icons/fa";
 import iconMap, { FaCode } from "../utils/iconMapper";
@@ -15,9 +14,8 @@ import hostingImage from "../assets/service-images/domain-hosting-business-email
 import socialMediaImage from "../assets/service-images/social-media-management-marketing.jpg";
 import paidAdsImage from "../assets/service-images/google-meta-ads.jpg";
 import localBusinessImage from "../assets/service-images/google-business-profile.jpg";
+import { getCachedJson } from "../utils/publicApi";
 
-// const API_URL = "http://localhost:5000/api/services";
-const API_URL = "https://digital-pintu-backend.onrender.com/api/services";
 
 const serviceImageFallbacks = [
   { keywords: ["seo", "search engine"], image: seoImage },
@@ -52,7 +50,7 @@ export default function Services() {
     const fetchServices = async () => {
       try {
         // Always request the latest public catalogue after an admin change.
-        const { data } = await axios.get(API_URL);
+        const data = await getCachedJson("/api/services");
         // console.log(data);
 
         setServices(data);

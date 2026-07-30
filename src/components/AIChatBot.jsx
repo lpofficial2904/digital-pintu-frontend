@@ -3,9 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { FiMail, FiPhone, FiSend, FiX } from "react-icons/fi";
 import chatbotRobot from "../assets/chatbot-robot.gif";
 import { defaultSiteSettings } from "../utils/useSiteSettings";
+import { getCachedJson } from "../utils/publicApi";
 
-const SERVICES_URL = "https://digital-pintu-backend.onrender.com/api/services";
-const SETTINGS_URL = `${import.meta.env.VITE_API_URL}/api/site-settings`;
 const quickReplies = ["View services", "Request pricing", "Contact us"];
 
 const defaultSettings = {
@@ -58,14 +57,8 @@ export default function AIChatBot() {
 
   useEffect(() => {
     Promise.allSettled([
-      fetch(SERVICES_URL).then((response) => {
-        if (!response.ok) throw new Error("Unable to load services");
-        return response.json();
-      }),
-      fetch(SETTINGS_URL).then((response) => {
-        if (!response.ok) throw new Error("Unable to load chatbot settings");
-        return response.json();
-      }),
+      getCachedJson("/api/services"),
+      getCachedJson("/api/site-settings", { maxAge: 10 * 60 * 1000 }),
     ]).then(([servicesResult, settingsResult]) => {
       if (servicesResult.status === "fulfilled") {
         setServices(Array.isArray(servicesResult.value) ? servicesResult.value : []);

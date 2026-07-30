@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import digitalPintuLogo from "../assets/digital-pintu-logo-new.png";
 import useSiteSettings from "../utils/useSiteSettings";
+import { getCachedJson } from "../utils/publicApi";
 
 import {
   FiArrowUp,
@@ -96,8 +96,8 @@ export default function Footer() {
   useEffect(() => {
     let active = true;
 
-    axios.get(WEBSITE_PAGES_API)
-      .then(({ data }) => {
+    getCachedJson(WEBSITE_PAGES_API)
+      .then((data) => {
         if (!active || !Array.isArray(data)) return;
         setQuickLinks(
           data

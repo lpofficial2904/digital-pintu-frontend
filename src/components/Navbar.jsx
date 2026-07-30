@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import axios from "axios"; 
 import { useAuth } from "../context/AuthContext";
 import iconMap, { FaCode } from "../utils/iconMapper";
 import { toast } from "sonner"; // 1. Imported Sonner
@@ -12,6 +11,7 @@ import logo1 from "../assets/Untitled design.png";
 import logo2 from "../assets/Untitled design (1).png";
 import logo from "../assets/Untitled_design__1_-removebg-preview.png";
 import useSiteSettings from "../utils/useSiteSettings";
+import { getCachedJson } from "../utils/publicApi";
 import {
   FiMenu,
   FiX,
@@ -139,7 +139,7 @@ export default function Navbar() {
       try {
         
 
-        const { data } = await axios.get("https://digital-pintu-backend.onrender.com/api/services");
+        const data = await getCachedJson("/api/services");
         setServices(data);
       } catch (error) {
         console.error("Unable to fetch navbar services:", error);
@@ -176,7 +176,7 @@ export default function Navbar() {
     let active = true;
     const fetchNavigation = async () => {
       try {
-        const { data } = await axios.get(WEBSITE_PAGES_API);
+        const data = await getCachedJson(WEBSITE_PAGES_API);
         if (!active || !Array.isArray(data)) return;
         setManagedNavLinks(
           data

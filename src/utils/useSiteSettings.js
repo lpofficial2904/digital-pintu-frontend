@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { getCachedJson } from "./publicApi";
 
 export const defaultContentSettings = {
   hero: {
@@ -54,11 +55,7 @@ export default function useSiteSettings() {
   const [settings, setSettings] = useState(defaultSiteSettings);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/site-settings`, { cache: "no-store" })
-      .then((response) => {
-        if (!response.ok) throw new Error("Unable to load site settings");
-        return response.json();
-      })
+    getCachedJson("/api/site-settings", { maxAge: 10 * 60 * 1000 })
       .then((data) => setSettings((current) => ({
         ...current,
         ...data,

@@ -1,6 +1,5 @@
 import { Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
 
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
@@ -23,23 +22,23 @@ import BlogDetails from "./pages/BlogDetails";
 import ProcessSection from "./components/ProcessSection";
 import ManagedPage from "./pages/ManagedPage";
 import LegalPage from "./pages/LegalPage";
+import { getCachedJson } from "./utils/publicApi";
 
 const WEBSITE_PAGES_API = `${import.meta.env.VITE_API_URL || "https://digital-pintu-backend.onrender.com"}/api/website-pages`;
 
 function PageGate({ slug, children }) {
-  const [allowed, setAllowed] = useState(null);
+  const [allowed, setAllowed] = useState(true);
 
   useEffect(() => {
     let active = true;
-    axios.get(`${WEBSITE_PAGES_API}/${slug}`)
+    getCachedJson(`${WEBSITE_PAGES_API}/${slug}`)
       .then(() => { if (active) setAllowed(true); })
       .catch((error) => {
-        if (active) setAllowed(error.response?.status === 404 ? false : true);
+        if (active) setAllowed(error.status === 404 ? false : true);
       });
     return () => { active = false; };
   }, [slug]);
 
-  if (allowed === null) return <div className="min-h-screen bg-[#050b14]" />;
   if (!allowed) return <ManagedPage pageSlug={slug} />;
   return children;
 }
@@ -48,8 +47,8 @@ function Home({ refreshReviews, handleReviewAdded }) {
   const [activePages, setActivePages] = useState(null);
 
   useEffect(() => {
-    axios.get(WEBSITE_PAGES_API)
-      .then(({ data }) => setActivePages(new Set(data.map((page) => page.key))))
+    getCachedJson(WEBSITE_PAGES_API)
+      .then((data) => setActivePages(new Set(data.map((page) => page.key))))
       .catch(() => setActivePages(null));
   }, []);
 

@@ -1,19 +1,10 @@
-import { useEffect, useState } from "react";
 import { FaPhoneAlt, FaWhatsapp } from "react-icons/fa";
-
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+import useSiteSettings from "../utils/useSiteSettings";
 
 export default function FloatingContactButtons() {
-  const [settings, setSettings] = useState(null);
+  const settings = useSiteSettings();
 
-  useEffect(() => {
-    fetch(`${API_BASE_URL}/api/site-settings`)
-      .then((response) => (response.ok ? response.json() : null))
-      .then(setSettings)
-      .catch(() => setSettings(null));
-  }, []);
-
-  if (!settings?.phoneNumber && !settings?.whatsappNumber) return null;
+  if (!settings.phoneNumber && !settings.whatsappNumber) return null;
   const phone = settings.phoneNumber.replace(/[^+\d]/g, "");
   const whatsappUrl = settings.whatsappNumber && `https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(settings.whatsappMessage || "")}`;
 
