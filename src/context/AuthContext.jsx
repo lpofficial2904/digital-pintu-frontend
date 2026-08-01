@@ -2,7 +2,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext();
 // const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = "https://api.digitalpintu.com";
+const SESSION_ORIGIN_KEY = "user_session_api_origin";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -11,7 +12,14 @@ export const AuthProvider = ({ children }) => {
   // Get Logged In User
   useEffect(() => {
     const fetchCurrentUser = async () => {
-      if (!localStorage.getItem("user")) {
+      const storedUser = localStorage.getItem("user");
+      const token = localStorage.getItem("user_token");
+      const sessionOrigin = localStorage.getItem(SESSION_ORIGIN_KEY);
+
+      if (!storedUser || !token || sessionOrigin !== API_BASE_URL) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("user_token");
+        localStorage.removeItem(SESSION_ORIGIN_KEY);
         setLoading(false);
         return;
       }
@@ -29,6 +37,7 @@ export const AuthProvider = ({ children }) => {
       try {
         const res = await fetch(`${API_BASE_URL}/api/auth/me`, {
   credentials: "include",
+  headers: { Authorization: `Bearer ${token}` },
 });
 
         const data = await res.json();
@@ -38,11 +47,15 @@ export const AuthProvider = ({ children }) => {
         } else {
           setUser(null);
           localStorage.removeItem("user");
+          localStorage.removeItem("user_token");
+          localStorage.removeItem(SESSION_ORIGIN_KEY);
         }
       } catch (error) {
         console.log(error);
         setUser(null);
         localStorage.removeItem("user");
+        localStorage.removeItem("user_token");
+        localStorage.removeItem(SESSION_ORIGIN_KEY);
       } finally {
         setLoading(false);
       }
@@ -75,6 +88,8 @@ export const AuthProvider = ({ children }) => {
     // localStorage.removeItem("user");
 
     localStorage.removeItem("user");
+    localStorage.removeItem("user_token");
+    localStorage.removeItem(SESSION_ORIGIN_KEY);
     window.location.href = "/";
   };
 

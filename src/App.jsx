@@ -26,7 +26,7 @@ import { getCachedJson } from "./utils/publicApi";
 import RealtimeWebsiteUpdates from "./components/RealtimeWebsiteUpdates";
 import NotFound from "./pages/NotFound";
 
-const WEBSITE_PAGES_API = `${import.meta.env.VITE_API_URL || "https://api.digitalpintu.com"}/api/website-pages`;
+const WEBSITE_PAGES_API = "https://api.digitalpintu.com/api/website-pages";
 
 function PageGate({ slug, children }) {
   const [allowed, setAllowed] = useState(true);

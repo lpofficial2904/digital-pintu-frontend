@@ -9,8 +9,8 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import useSiteSettings from "../utils/useSiteSettings";
 
-const API_URL = `${import.meta.env.VITE_API_URL || "https://api.digitalpintu.com"}/api/website-pages`;
-const CAREER_APPLICATIONS_API = `${import.meta.env.VITE_API_URL || "https://api.digitalpintu.com"}/api/career-applications`;
+const API_URL = "https://api.digitalpintu.com/api/website-pages";
+const CAREER_APPLICATIONS_API = "https://api.digitalpintu.com/api/career-applications";
 
 const aboutCards = [
   {

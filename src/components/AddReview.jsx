@@ -14,7 +14,7 @@ import {
 } from "react-icons/fi";
 
 // const API = "http://localhost:5000/api/reviews";
-const API = `${import.meta.env.VITE_API_URL || "https://api.digitalpintu.com"}/api/reviews`;
+const API = "https://api.digitalpintu.com/api/reviews";
 
 export default function AddReview({ onReviewAdded }) {
   const { user } = useAuth();
@@ -40,7 +40,7 @@ export default function AddReview({ onReviewAdded }) {
     try {
       setLoading(true);
 
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("user_token");
 
       const response = await fetch(API, {
         method: "POST",
@@ -48,7 +48,7 @@ export default function AddReview({ onReviewAdded }) {
 
         headers: {
           "Content-Type": "application/json",
-          // Authorization: `Bearer ${token}`,
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
 
         body: JSON.stringify({

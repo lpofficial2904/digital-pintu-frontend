@@ -11,7 +11,7 @@ import {
 } from "react-icons/fi";
 
 // const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = "https://api.digitalpintu.com";
 // const API_BASE_URL = import.meta.env.VITE_API_URL || "https://digital-pintu-backend.onrender.com/";
 
 export default function Register() {
@@ -68,6 +68,8 @@ export default function Register() {
           // localStorage.setItem("token", data.token);
 
           localStorage.setItem("user", JSON.stringify(data.user));
+          localStorage.setItem("user_token", data.token);
+          localStorage.setItem("user_session_api_origin", API_BASE_URL);
 
           resolve(data);
         } catch (err) {

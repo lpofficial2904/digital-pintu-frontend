@@ -257,7 +257,7 @@ import {
 import { DiMongodb } from "react-icons/di";
 import iconMap from "../utils/iconMapper";
 
-const API_URL = `${import.meta.env.VITE_API_URL || "https://api.digitalpintu.com"}/api/services`;
+const API_URL = "https://api.digitalpintu.com/api/services";
 
 // Helper map to dynamically load specific icons for technologies
 const techIconMap = {

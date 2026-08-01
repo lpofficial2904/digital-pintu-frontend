@@ -32,7 +32,7 @@ const services = [
   "Graphic Design",
 ];
 
-const WEBSITE_PAGES_API = `${import.meta.env.VITE_API_URL || "https://api.digitalpintu.com"}/api/website-pages`;
+const WEBSITE_PAGES_API = "https://api.digitalpintu.com/api/website-pages";
 
 const getPagePath = (page) => {
   const knownPaths = {

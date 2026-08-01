@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import ReviewCard from "./ReviewCard";
 
-const API_URL = `${import.meta.env.VITE_API_URL || "https://api.digitalpintu.com"}/api/reviews`;
+const API_URL = "https://api.digitalpintu.com/api/reviews";
 
 export default function ReviewSection({ refresh }) {
   const [reviews, setReviews] = useState([]);

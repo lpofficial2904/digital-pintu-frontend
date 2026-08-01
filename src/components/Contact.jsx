@@ -27,7 +27,7 @@ import Navbar from "./Navbar";
 import useSiteSettings from "../utils/useSiteSettings";
 
 // const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = "https://api.digitalpintu.com";
 
 export default function Contact() {
   const navigate = useNavigate();

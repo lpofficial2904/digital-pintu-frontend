@@ -5,7 +5,7 @@ import { FiArrowLeft, FiEye, FiEyeOff, FiLock, FiMail } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "sonner";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = "https://api.digitalpintu.com";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -36,6 +36,8 @@ export default function Login() {
       const data = await response.json();
       if (!data.success) throw new Error(data.message || "Login failed");
       localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("user_token", data.token);
+      localStorage.setItem("user_session_api_origin", API_BASE_URL);
       return data;
     };
 
