@@ -48,7 +48,7 @@ const navLinks = [
   { title: "Contact", path: "/#contact" },
 ];
 
-const WEBSITE_PAGES_API = `${import.meta.env.VITE_API_URL || "https://digital-pintu-backend.onrender.com"}/api/website-pages`;
+const WEBSITE_PAGES_API = `${import.meta.env.VITE_API_URL || "https://api.digitalpintu.com"}/api/website-pages`;
 
 const getPagePath = (page) => {
   const knownPaths = {
@@ -241,26 +241,27 @@ export default function Navbar() {
               {/* <img src={logo} width="150"  alt="Logo" /> */}
               <img src={settings.logoData || digitalPintuLogo} className="w-[112px] sm:w-[150px]" alt="Digital Pintu Solutions logo" />
             </motion.div>
-            <div className="hidden sm:block">
+            {settings.navbarBrandActive !== false && (
+            <div className="hidden max-w-[180px] sm:block">
               <h2 className="text-2xl font-bold">
                 {/* <span className="text-white">Digital</span>
                 <span className="text-cyan-400"> Pintu</span> */}
                 {/* <img src={digitalPintuLogo} width="80"  alt="Logo" /> */}
               </h2>
               <p className="text-[10px] uppercase tracking-[4px] text-gray-400">
-                DIGITAL Pintu <br/> Solutions
+                {settings.navbarBrandText || "Digital Pintu Solutions"}
               </p>
             </div>
+            )}
           </Link>
 
+          {settings.navbarBrandActive !== false && (
           <div className="min-w-0 flex-1 px-1 text-center sm:hidden">
             <p className="text-[9px] font-bold uppercase leading-tight tracking-[0.8px] text-white">
-              Digital Pintu
-            </p>
-            <p className="text-[8px] uppercase leading-tight tracking-[1.4px] text-cyan-400">
-              Solution
+              {settings.navbarBrandText || "Digital Pintu Solutions"}
             </p>
           </div>
+          )}
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-2">

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
@@ -13,7 +14,7 @@ import {
 } from "react-icons/fi";
 
 // const API = "http://localhost:5000/api/reviews";
-const API = "https://digital-pintu-backend.onrender.com/api/reviews";
+const API = `${import.meta.env.VITE_API_URL || "https://api.digitalpintu.com"}/api/reviews`;
 
 export default function AddReview({ onReviewAdded }) {
   const { user } = useAuth();

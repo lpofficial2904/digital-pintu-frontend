@@ -1,9 +1,21 @@
 export const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "https://digital-pintu-backend.onrender.com";
+  import.meta.env.VITE_API_URL || "https://api.digitalpintu.com";
 
 const memoryCache = new Map();
 const pendingRequests = new Map();
 const STORAGE_PREFIX = "digital-pintu-api:";
+
+export const clearPublicApiCache = () => {
+  memoryCache.clear();
+  pendingRequests.clear();
+  try {
+    Object.keys(localStorage)
+      .filter((key) => key.startsWith(STORAGE_PREFIX))
+      .forEach((key) => localStorage.removeItem(key));
+  } catch {
+    // Storage can be unavailable in privacy modes.
+  }
+};
 
 const readStored = (url, maxAge) => {
   try {

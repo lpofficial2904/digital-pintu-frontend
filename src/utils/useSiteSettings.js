@@ -48,6 +48,8 @@ export const defaultSiteSettings = {
   linkedinUrl: "",
   githubUrl: "",
   logoData: "",
+  navbarBrandText: "Digital Pintu Solutions",
+  navbarBrandActive: true,
   contentSettings: defaultContentSettings,
 };
 
@@ -55,10 +57,15 @@ export default function useSiteSettings() {
   const [settings, setSettings] = useState(defaultSiteSettings);
 
   useEffect(() => {
-    getCachedJson("/api/site-settings", { maxAge: 10 * 60 * 1000 })
-      .then((data) => setSettings((current) => ({
+    let active = true;
+    const syncSettings = (force = false) => getCachedJson("/api/site-settings", { maxAge: 2000, force })
+      .then((data) => {
+        if (!active) return;
+        setSettings((current) => ({
         ...current,
         ...data,
+        navbarBrandText: data.navbarBrandText ?? data.contentSettings?.navbarBrandText ?? defaultSiteSettings.navbarBrandText,
+        navbarBrandActive: data.navbarBrandActive ?? data.contentSettings?.navbarBrandActive ?? defaultSiteSettings.navbarBrandActive,
         contentSettings: {
           ...defaultContentSettings,
           ...(data.contentSettings || {}),
@@ -66,8 +73,22 @@ export default function useSiteSettings() {
           whyChooseUs: { ...defaultContentSettings.whyChooseUs, ...(data.contentSettings?.whyChooseUs || {}) },
           about: { ...defaultContentSettings.about, ...(data.contentSettings?.about || {}) },
         },
-      })))
+        }));
+      })
       .catch(() => {});
+
+    syncSettings(true);
+    const interval = window.setInterval(() => {
+      if (!document.hidden) syncSettings(true);
+    }, 2000);
+    const refresh = () => active && syncSettings(true);
+    window.addEventListener("focus", refresh);
+
+    return () => {
+      active = false;
+      window.clearInterval(interval);
+      window.removeEventListener("focus", refresh);
+    };
   }, []);
 
   return settings;

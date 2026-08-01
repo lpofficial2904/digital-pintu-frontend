@@ -23,8 +23,10 @@ import ProcessSection from "./components/ProcessSection";
 import ManagedPage from "./pages/ManagedPage";
 import LegalPage from "./pages/LegalPage";
 import { getCachedJson } from "./utils/publicApi";
+import RealtimeWebsiteUpdates from "./components/RealtimeWebsiteUpdates";
+import NotFound from "./pages/NotFound";
 
-const WEBSITE_PAGES_API = `${import.meta.env.VITE_API_URL || "https://digital-pintu-backend.onrender.com"}/api/website-pages`;
+const WEBSITE_PAGES_API = `${import.meta.env.VITE_API_URL || "https://api.digitalpintu.com"}/api/website-pages`;
 
 function PageGate({ slug, children }) {
   const [allowed, setAllowed] = useState(true);
@@ -82,6 +84,7 @@ function App() {
 
   return (
     <>
+    <RealtimeWebsiteUpdates />
     <Routes>
       <Route
         path="/"
@@ -117,6 +120,7 @@ function App() {
       <Route path="/privacy-policy" element={<LegalPage type="privacy" />} />
       <Route path="/terms" element={<LegalPage type="terms" />} />
       <Route path="/pages/:slug" element={<ManagedPage />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
     <FloatingContactButtons />
     <AIChatBot />
