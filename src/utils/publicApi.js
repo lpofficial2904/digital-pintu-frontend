@@ -1,6 +1,8 @@
 // The production API is intentionally fixed here so a stale hosting-level
 // VITE_API_URL cannot send requests back to the retired Render service.
-export const API_BASE_URL = "https://api.digitalpintu.com";
+export const API_BASE_URL = import.meta.env.DEV
+  ? (import.meta.env.VITE_API_URL || "http://localhost:5000").replace(/\/$/, "")
+  : "https://api.digitalpintu.com";
 
 const memoryCache = new Map();
 const pendingRequests = new Map();

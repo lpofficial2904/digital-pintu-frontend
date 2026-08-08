@@ -11,7 +11,7 @@ import logo1 from "../assets/Untitled design.png";
 import logo2 from "../assets/Untitled design (1).png";
 import logo from "../assets/Untitled_design__1_-removebg-preview.png";
 import useSiteSettings from "../utils/useSiteSettings";
-import { getCachedJson } from "../utils/publicApi";
+import { API_BASE_URL, getCachedJson } from "../utils/publicApi";
 import {
   FiMenu,
   FiX,
@@ -48,7 +48,7 @@ const navLinks = [
   { title: "Contact", path: "/#contact" },
 ];
 
-const WEBSITE_PAGES_API = "https://api.digitalpintu.com/api/website-pages";
+const WEBSITE_PAGES_API = `${API_BASE_URL}/api/website-pages`;
 
 const getPagePath = (page) => {
   const knownPaths = {
@@ -203,6 +203,7 @@ export default function Navbar() {
         ease: "easeOut",
        }}
       className="fixed top-0 left-0 w-full z-50 flex justify-center"
+      style={{ top: "var(--offer-bar-height, 0px)" }}
     >
       <motion.div
         animate={{
@@ -239,7 +240,7 @@ export default function Navbar() {
             >
               {/* DP */}
               {/* <img src={logo} width="150"  alt="Logo" /> */}
-              <img src={settings.logoData || digitalPintuLogo} className="w-[112px] sm:w-[150px]" alt="Digital Pintu Solutions logo" />
+              <img src={settings.logoData || digitalPintuLogo} alt="Digital Pintu Solutions logo" className="object-contain" style={{ width: `${settings.logoWidth || 112}px`, height: `${settings.logoHeight || 72}px`, maxWidth: "32vw" }} />
             </motion.div>
             {settings.navbarBrandActive !== false && (
             <div className="hidden max-w-[180px] sm:block">

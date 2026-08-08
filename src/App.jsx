@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
@@ -10,23 +10,21 @@ import WhyChooseUs from "./components/WhyChooseUs";
 import ReviewSection from "./components/ReviewSection";
 import AddReview from "./components/AddReview";
 
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import ServiceDetails from "./pages/ServiceDetails";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import FloatingContactButtons from "./components/FloatingContactButtons";
 import AIChatBot from "./components/AIChatBot";
-import Blogs from "./pages/Blogs";
-import BlogDetails from "./pages/BlogDetails";
 import ProcessSection from "./components/ProcessSection";
-import ManagedPage from "./pages/ManagedPage";
-import LegalPage from "./pages/LegalPage";
 import { getCachedJson } from "./utils/publicApi";
 import RealtimeWebsiteUpdates from "./components/RealtimeWebsiteUpdates";
-import NotFound from "./pages/NotFound";
+import SeoManager from "./components/SeoManager";
+import ThemeManager from "./components/ThemeManager";
+import OfferDisplay from "./components/OfferDisplay";
+import useSiteSettings from "./utils/useSiteSettings";
+import { API_BASE_URL } from "./utils/publicApi";
 
-const WEBSITE_PAGES_API = "https://api.digitalpintu.com/api/website-pages";
+const WEBSITE_PAGES_API = `${API_BASE_URL}/api/website-pages`;
+const Login = lazy(() => import("./pages/Login")); const Register = lazy(() => import("./pages/Register")); const ServiceDetails = lazy(() => import("./pages/ServiceDetails")); const Blogs = lazy(() => import("./pages/Blogs")); const BlogDetails = lazy(() => import("./pages/BlogDetails")); const ManagedPage = lazy(() => import("./pages/ManagedPage")); const LegalPage = lazy(() => import("./pages/LegalPage")); const NotFound = lazy(() => import("./pages/NotFound"));
 
 function PageGate({ slug, children }) {
   const [allowed, setAllowed] = useState(true);
@@ -46,12 +44,16 @@ function PageGate({ slug, children }) {
 }
 
 function Home({ refreshReviews, handleReviewAdded }) {
+  const { contentSettings } = useSiteSettings();
+  const sections = contentSettings.sections || {};
   const [activePages, setActivePages] = useState(null);
 
   useEffect(() => {
-    getCachedJson(WEBSITE_PAGES_API)
+    const load = () => getCachedJson(WEBSITE_PAGES_API, { force: true, maxAge: 0 })
       .then((data) => setActivePages(new Set(data.map((page) => page.key))))
       .catch(() => setActivePages(null));
+    load(); const interval = window.setInterval(load, 10000); window.addEventListener("focus", load);
+    return () => { window.clearInterval(interval); window.removeEventListener("focus", load); };
   }, []);
 
   const visible = (key) => activePages === null || activePages.has(key);
@@ -60,16 +62,16 @@ function Home({ refreshReviews, handleReviewAdded }) {
     <div id="home" className="bg-[#070B14] text-white">
       <Navbar />
       <Hero />
-      <TechMarquee />
-      {visible("services") && <Services />}
-      <StatsSection />
-      <WhyChooseUs />
-      {visible("process") && <ProcessSection />}
+      {sections.tech !== false && <TechMarquee />}
+      {sections.services !== false && visible("services") && <Services showNavbar={false} />}
+      {sections.stats !== false && <StatsSection />}
+      {sections.whyChooseUs !== false && <WhyChooseUs />}
+      {sections.process !== false && visible("process") && <ProcessSection />}
 
-      {visible("reviews") && <ReviewSection refresh={refreshReviews} />}
+      {sections.reviews !== false && visible("reviews") && <ReviewSection refresh={refreshReviews} />}
 
       {/* <AddReview onReviewAdded={handleReviewAdded} /> */}
-      {visible("contact") && <Contact/>}
+      {sections.contact !== false && visible("contact") && <Contact showNavbar={false}/>}
       <Footer/>
     </div>
   );
@@ -84,8 +86,11 @@ function App() {
 
   return (
     <>
+    <ThemeManager />
+    <OfferDisplay />
     <RealtimeWebsiteUpdates />
-    <Routes>
+    <SeoManager headOnly />
+    <Suspense fallback={<div className="min-h-screen bg-[#070b14]" />}><Routes>
       <Route
         path="/"
         element={
@@ -107,7 +112,7 @@ function App() {
     <PageGate slug="services">
       <Navbar />
       <ServiceDetails />
-      <Contact />
+      <Contact showNavbar={false} />
       <Footer />
     </PageGate>
   }
@@ -121,7 +126,8 @@ function App() {
       <Route path="/terms" element={<LegalPage type="terms" />} />
       <Route path="/pages/:slug" element={<ManagedPage />} />
       <Route path="*" element={<NotFound />} />
-    </Routes>
+    </Routes></Suspense>
+    <SeoManager contentOnly />
     <FloatingContactButtons />
     <AIChatBot />
     </>

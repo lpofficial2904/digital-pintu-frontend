@@ -42,6 +42,7 @@ const aboutCards = [
 function AboutPage() {
   const { contentSettings } = useSiteSettings();
   const about = contentSettings.about;
+  const cta = contentSettings.aboutCta;
   return (
     <section className="relative mx-auto max-w-6xl">
       <div className="pointer-events-none absolute left-1/2 top-16 h-80 w-80 -translate-x-1/2 rounded-full bg-cyan-500/15 blur-[130px]" />
@@ -100,17 +101,17 @@ function AboutPage() {
         className="relative mt-6 flex flex-col items-start justify-between gap-6 overflow-hidden rounded-lg border border-[#223046] bg-[#111b2a] p-7 transition-colors hover:border-cyan-500 sm:flex-row sm:items-center sm:p-9"
       >
         <div>
-          <p className="text-xs font-bold uppercase tracking-[.24em] text-cyan-400">What we bring together</p>
+          <p className="text-xs font-bold uppercase tracking-[.24em] text-cyan-400">{cta.eyebrow}</p>
           <h2 className="mt-3 text-2xl font-bold sm:text-3xl">Strategy, design and technology—under one roof.</h2>
           <p className="mt-3 max-w-2xl leading-7 text-slate-400">
-            From websites and mobile apps to SEO, automation and digital marketing, our team builds connected solutions for sustainable growth.
+            {cta.description}
           </p>
         </div>
         <Link
-          to="/services"
+          to={cta.buttonUrl}
           className="inline-flex shrink-0 items-center gap-2 rounded bg-cyan-400 px-6 py-3.5 font-bold text-black transition hover:bg-cyan-300 hover:shadow-[0_0_30px_rgba(0,255,255,.25)]"
         >
-          Explore Services <ArrowRight size={18} />
+          {cta.buttonLabel} <ArrowRight size={18} />
         </Link>
       </motion.div>
     </section>

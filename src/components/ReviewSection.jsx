@@ -1,10 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import ReviewCard from "./ReviewCard";
+import useSiteSettings from "../utils/useSiteSettings";
+import { API_BASE_URL } from "../utils/publicApi";
 
-const API_URL = "https://api.digitalpintu.com/api/reviews";
+const API_URL = `${API_BASE_URL}/api/reviews`;
 
 export default function ReviewSection({ refresh }) {
+  const { contentSettings } = useSiteSettings();
+  const copy = contentSettings.reviewsSection;
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -32,8 +36,12 @@ export default function ReviewSection({ refresh }) {
       }
     };
     fetchReviews();
+    const interval = window.setInterval(fetchReviews, 10000);
+    window.addEventListener("focus", fetchReviews);
     return () => {
       mounted = false;
+      window.clearInterval(interval);
+      window.removeEventListener("focus", fetchReviews);
     };
   }, [refresh]);
 
@@ -70,12 +78,12 @@ export default function ReviewSection({ refresh }) {
         >
           <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/[0.08] px-4 py-2 text-xs font-semibold uppercase tracking-wide text-cyan-300">
             <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,.8)]" />
-            Client Proof
+            {copy.eyebrow}
           </div>
           <h2 className="mt-6 text-[40px] font-black leading-tight tracking-[-0.04em] sm:text-5xl lg:text-[62px]">
-            Words from{" "}
+            {copy.heading}{" "}
             <span className="bg-gradient-to-r from-cyan-400 via-sky-500 to-blue-600 bg-clip-text text-transparent">
-              Happy Clients
+              {copy.accentHeading}
             </span>
           </h2>
         </motion.div>

@@ -10,7 +10,15 @@ body {
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
+  background: var(--site-bg, #070b14);
+  color: var(--site-text, #fff);
+  font-family: var(--site-font, Inter), system-ui, sans-serif;
 }
+
+body[data-theme="light"] { color-scheme: light; }
+body[data-theme="dark"] { color-scheme: dark; }
+.reduce-site-motion *, .reduce-site-motion *::before, .reduce-site-motion *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+.site-theme-button { background: linear-gradient(90deg,var(--site-primary),var(--site-secondary)); border-radius: var(--site-radius); }
 
 #root {
   width: 100%;

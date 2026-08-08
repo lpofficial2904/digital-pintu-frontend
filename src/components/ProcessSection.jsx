@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import useSiteSettings from "../utils/useSiteSettings";
 
 const steps = [
   {
@@ -29,15 +30,19 @@ const steps = [
 ];
 
 export default function ProcessSection() {
+  const { contentSettings } = useSiteSettings();
+  const process = contentSettings.process;
+  const managedSteps = process.steps?.length ? process.steps : steps;
   const [activeStep, setActiveStep] = useState(0);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
-      setActiveStep((current) => (current + 1) % steps.length);
-    }, 3000);
+      setActiveStep((current) => (current + 1) % managedSteps.length);
+    }, Math.max(1200, Number(process.interval || 2200) * 0.75));
 
     return () => window.clearInterval(timer);
-  }, []);
+  }, [managedSteps.length, process.interval]);
+  if (process.isActive === false) return null;
 
   return (
     <section id="process" className="relative overflow-hidden bg-[#07111d] py-20 text-white sm:py-24 lg:py-28">
@@ -52,13 +57,13 @@ export default function ProcessSection() {
         >
           <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/[0.08] px-4 py-2 text-xs font-semibold uppercase tracking-wide text-cyan-300">
             <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,.8)]" />
-            How We Work
+            {process.eyebrow}
           </div>
 
           <h2 className="mt-7 text-[40px] font-black leading-tight tracking-[-0.045em] sm:text-5xl lg:text-[62px]">
-            From Idea to{" "}
+            {process.heading}{" "}
             <span className="bg-gradient-to-r from-cyan-400 via-sky-500 to-blue-600 bg-clip-text text-transparent">
-              Launch
+              {process.accentHeading}
             </span>
           </h2>
         </motion.div>
@@ -67,7 +72,7 @@ export default function ProcessSection() {
           <div className="absolute left-6 top-6 h-[calc(100%-3rem)] w-px bg-gradient-to-b from-cyan-400/40 via-sky-500/35 to-blue-600/40 lg:left-[3.2%] lg:right-[5%] lg:top-[52px] lg:h-px lg:w-auto" />
 
           <div className="relative grid gap-4 lg:grid-cols-4 lg:gap-0">
-            {steps.map((step, index) => {
+            {managedSteps.map((step, index) => {
               const highlighted = index === activeStep;
               return (
               <motion.article

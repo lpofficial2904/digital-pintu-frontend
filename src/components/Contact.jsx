@@ -25,14 +25,14 @@ import {
 } from "react-icons/fa";
 import Navbar from "./Navbar";
 import useSiteSettings from "../utils/useSiteSettings";
+import { API_BASE_URL } from "../utils/publicApi";
 
 // const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-const API_BASE_URL = "https://api.digitalpintu.com";
-
-export default function Contact() {
+export default function Contact({ showNavbar = true }) {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const settings = useSiteSettings();
+  const contactContent = settings.contentSettings.contact;
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -85,7 +85,7 @@ export default function Contact() {
   },
   {
     title: "Working Hours",
-    subtitle: "Mon - Sat | 9 AM - 8 PM",
+    subtitle: contactContent.workingHours,
     icon: <FiClock />,
     color: "from-green-500 to-emerald-600",
     link: "#",
@@ -130,7 +130,7 @@ export default function Contact() {
 
   return (
     <>
-    <Navbar/>
+    {showNavbar && <Navbar/>}
     <section id="contact"> 
       <Toaster position="top-right" reverseOrder={false} />
 
@@ -211,7 +211,7 @@ once:true
 
 <span className="text-cyan-300 text-sm">
 
-Let's Build Something Amazing
+{contactContent.eyebrow}
 
 </span>
 
@@ -219,7 +219,7 @@ Let's Build Something Amazing
 
 <h1 className="mt-8 text-5xl lg:text-7xl font-black leading-tight">
 
-Contact
+{contactContent.heading}
 
 <span className="block bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-500 bg-clip-text text-transparent">
 
@@ -231,11 +231,7 @@ Digital Pintu
 
 <p className="mt-8 text-lg text-gray-400 leading-8 max-w-xl">
 
-We create stunning websites, mobile apps,
-SEO strategies and digital experiences that
-help your business grow faster.
-
-Let's connect and build your next project.
+{contactContent.description}
 
 </p>
 
@@ -692,13 +688,8 @@ className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 re
               onChange={handleChange}
               className="w-full rounded-2xl border border-white/10 bg-[#08111f] px-5 py-4 outline-none focus:border-cyan-400 transition"
             >
-              <option value="">Choose Service</option>
-              <option>Web Development</option>
-              <option>App Development</option>
-              <option>UI / UX Design</option>
-              <option>SEO Optimization</option>
-              <option>Digital Marketing</option>
-              <option>E-Commerce</option>
+              <option value="">{contactContent.servicePlaceholder}</option>
+              {(contactContent.serviceOptions || []).map((option) => <option key={option}>{option}</option>)}
             </select>
           </motion.div>
 
@@ -734,7 +725,7 @@ className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 re
             disabled={isLoading}
             className="w-full rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600 py-5 flex items-center justify-center gap-3 text-lg font-bold disabled:cursor-not-allowed disabled:opacity-70"
           >
-            {isLoading ? "Sending..." : "Send Message"}
+            {isLoading ? "Sending..." : contactContent.submitLabel}
 
             <FiSend className="text-xl" />
           </motion.button> */}
@@ -750,7 +741,7 @@ className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 re
   disabled={isLoading || authLoading}
   className="w-full rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600 py-5 flex items-center justify-center gap-3 text-lg font-bold disabled:cursor-not-allowed disabled:opacity-60"
 >
-  {authLoading ? "Checking login..." : isLoading ? "Sending..." : "Send Message"}
+  {authLoading ? "Checking login..." : isLoading ? "Sending..." : contactContent.submitLabel}
   <FiSend className="text-xl" />
 </motion.button>
 

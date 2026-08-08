@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import digitalPintuLogo from "../assets/digital-pintu-logo-new.png";
 import useSiteSettings from "../utils/useSiteSettings";
-import { getCachedJson } from "../utils/publicApi";
+import { API_BASE_URL, getCachedJson } from "../utils/publicApi";
 
 import {
   FiArrowUp,
@@ -32,7 +32,7 @@ const services = [
   "Graphic Design",
 ];
 
-const WEBSITE_PAGES_API = "https://api.digitalpintu.com/api/website-pages";
+const WEBSITE_PAGES_API = `${API_BASE_URL}/api/website-pages`;
 
 const getPagePath = (page) => {
   const knownPaths = {
@@ -85,6 +85,7 @@ export default function Footer() {
   const [atTop, setAtTop] = useState(true);
   const [quickLinks, setQuickLinks] = useState([]);
   const settings = useSiteSettings();
+  const footerContent = settings.contentSettings.footer;
 
   useEffect(() => {
     const updatePosition = () => setAtTop(window.scrollY < 50);
@@ -290,7 +291,7 @@ export default function Footer() {
                 
                 // className="w-16 h-16 rounded-2xl bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 flex items-center justify-center text-2xl font-black text-black"
               >
-                <img src={settings.logoData || digitalPintuLogo} width="150" alt="Digital Pintu Solutions logo" />
+                <img src={settings.logoData || digitalPintuLogo} alt="Digital Pintu Solutions logo" loading="lazy" decoding="async" className="object-contain" style={{ width: `${settings.logoWidth || 112}px`, height: `${settings.logoHeight || 72}px` }} />
                 {/* DP */}
               </motion.div>
 
@@ -312,7 +313,7 @@ export default function Footer() {
             </div>
 
             <p className="mt-8 text-gray-400 leading-8">
-             Transform your business with expert website development, mobile app development, UI/UX design, SEO, branding, and digital marketing services. We build fast, responsive, and scalable digital solutions that boost your online presence and drive business growth.
+             {footerContent.description}
             </p>
 
                         {/* Social Icons */}
@@ -357,7 +358,7 @@ export default function Footer() {
             viewport={{ once: true }}
           >
             <h3 className="text-2xl font-bold text-white mb-8">
-              Quick Links
+              {footerContent.quickLinksTitle}
             </h3>
 
             <div className="space-y-5">
@@ -388,7 +389,7 @@ export default function Footer() {
             viewport={{ once: true }}
           >
             <h3 className="text-2xl font-bold text-white mb-8">
-              Our Services
+              {footerContent.servicesTitle}
             </h3>
 
             <div className="space-y-5">
@@ -418,7 +419,7 @@ export default function Footer() {
             viewport={{ once: true }}
           >
             <h3 className="text-2xl font-bold text-white mb-8">
-              Contact Us
+              {footerContent.contactTitle}
             </h3>
 
             <div className="space-y-7">

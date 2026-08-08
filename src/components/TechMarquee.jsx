@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import useSiteSettings from "../utils/useSiteSettings";
 
 const techs = [
   "MongoDB",
@@ -46,10 +47,14 @@ const techs = [
 ];
 
 export default function TechMarquee() {
+  const { contentSettings } = useSiteSettings();
+  const managed = contentSettings.technologies;
 
   // Infinite scrolling ke liye duplicate array
   
-  const marqueeItems = [...techs, ...techs];
+  const source = managed.items?.length ? managed.items : techs;
+  const marqueeItems = [...source, ...source];
+  if (managed.isActive === false) return null;
 
   return (
     <section className="relative overflow-hidden border-y border-white/10 bg-[#0B1020] py-5">
@@ -66,7 +71,7 @@ export default function TechMarquee() {
         }}
         transition={{
           ease: "linear",
-          duration: 60,
+          duration: Math.max(12, Number(managed.speed || 38) * 0.65),
           repeat: Infinity,
         }}
       >

@@ -8,6 +8,7 @@ import mobileAppDevelopment from "../assets/blog-images/mobile-app-development-g
 import socialMediaStrategy from "../assets/blog-images/social-media-marketing-strategy.jpg";
 import technicalSeoChecklist from "../assets/blog-images/technical-seo-checklist.jpg";
 import websiteMaintenance from "../assets/blog-images/website-maintenance-checklist.jpg";
+import { API_BASE_URL } from "./publicApi";
 
 const imagesBySlug = {
   "ai-business-automation": aiBusinessAutomation,
@@ -38,9 +39,11 @@ const imageMatchers = [
 
 export const getBlogImage = (blog) => {
   const slug = blog?.slug || "";
+  const uploaded = blog?.image || blog?.imageThumbnail;
   return (
+    (uploaded?.startsWith("/") ? `${API_BASE_URL}${uploaded}` : uploaded) ||
     imagesBySlug[slug] ||
     imageMatchers.find(([keyword]) => slug.includes(keyword))?.[1] ||
-    (blog?.image && !blog.image.startsWith("data:") ? blog.image : "")
+    ""
   );
 };

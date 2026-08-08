@@ -117,7 +117,7 @@ export default function Hero() {
             transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
             className="relative overflow-hidden rounded-[28px] border border-cyan-400/30 bg-[#0d1625] shadow-[0_25px_90px_rgba(6,182,212,.18)]"
           >
-            <img src={heroDashboardVisual} alt="Modern analytics dashboard" className="aspect-[4/3] w-full object-cover" />
+            <img src={heroDashboardVisual} alt="Digital Pintu web development and analytics dashboard" width="1200" height="900" fetchPriority="high" decoding="async" className="aspect-[4/3] w-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#07111d] via-transparent to-cyan-500/5" />
             <div className="absolute inset-x-0 bottom-0 border-t border-white/10 bg-[#111827]/90 px-6 py-5 backdrop-blur-xl">
               <h3 className="font-bold text-white">Digital Growth Dashboard</h3>

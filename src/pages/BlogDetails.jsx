@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useParams } from "react-router-dom";
-import { FiArrowLeft, FiCalendar, FiUser } from "react-icons/fi";
+import { FiArrowLeft, FiCalendar, FiClock, FiUser } from "react-icons/fi";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { getCachedJson } from "../utils/publicApi";
@@ -9,26 +9,19 @@ import { getBlogImage } from "../utils/blogImages";
 
 export default function BlogDetails() {
   const { slug } = useParams();
-  const [blog, setBlog] = useState(null);
-  const [error, setError] = useState("");
-  useEffect(() => {
-    let active = true;
-    setError("");
-    getCachedJson(`/api/blogs/${encodeURIComponent(slug)}`, {
-      maxAge: 10 * 60 * 1000,
-    })
-      .then((data) => {
-        if (active) setBlog(data);
-      })
-      .catch(() => {
-        if (active) setError("This blog could not be found.");
-      });
-    return () => { active = false; };
-  }, [slug]);
-  if (error) return <div className="min-h-screen bg-[#050b14] text-white"><Navbar /><main className="flex min-h-screen items-center justify-center px-5"><div className="text-center"><p className="text-gray-300">{error}</p><Link to="/blogs" className="mt-5 inline-block text-cyan-400">Back to blogs</Link></div></main></div>;
-  if (!blog) return <div className="min-h-screen bg-[#050b14] px-5 pt-40"><div className="mx-auto h-96 max-w-4xl animate-pulse rounded-3xl bg-white/5" /></div>;
+  const [blog, setBlog] = useState(null); const [error, setError] = useState("");
+  useEffect(() => { let active = true; setError(""); getCachedJson(`/api/blogs/${encodeURIComponent(slug)}`, { maxAge: 600000 }).then((data) => active && setBlog(data)).catch(() => active && setError("This blog could not be found.")); return () => { active = false; }; }, [slug]);
+  if (error) return <div className="min-h-screen bg-[#050b14] text-white"><Navbar/><main className="flex min-h-screen items-center justify-center"><div className="text-center"><p>{error}</p><Link to="/blogs" className="mt-5 inline-block text-cyan-400">Back to blogs</Link></div></main></div>;
+  if (!blog) return <div className="min-h-screen bg-[#050b14] px-5 pt-40"><div className="mx-auto h-96 max-w-4xl animate-pulse rounded-3xl bg-white/5"/></div>;
   const title = blog.metaTitle || `${blog.title} | Digital Pintu`;
   const description = blog.metaDescription || blog.excerpt;
   const blogImage = getBlogImage(blog);
-  return <div className="min-h-screen bg-[#050b14] text-white"><Helmet><title>{title}</title><meta name="description" content={description} />{blog.metaKeywords && <meta name="keywords" content={blog.metaKeywords} />}</Helmet><Navbar /><main className="px-5 pb-24 pt-36"><article className="mx-auto max-w-4xl"><Link to="/blogs" className="inline-flex items-center gap-2 text-cyan-400"><FiArrowLeft /> All blogs</Link><div className="mt-8"><span className="rounded-full bg-cyan-500/10 px-3 py-1 text-sm text-cyan-300">{blog.category || "General"}</span><h1 className="mt-5 text-4xl font-black leading-tight sm:text-6xl">{blog.title}</h1><div className="mt-6 flex flex-wrap gap-5 text-sm text-gray-400"><span className="flex items-center gap-2"><FiUser /> {blog.author}</span><span className="flex items-center gap-2"><FiCalendar /> {new Date(blog.createdAt).toLocaleDateString()}</span></div></div>{blogImage && <img src={blogImage} alt={blog.title} className="mt-10 max-h-[520px] w-full rounded-3xl object-cover" />}<p className="mt-10 text-xl leading-9 text-gray-300">{blog.excerpt}</p><div className="mt-8 whitespace-pre-wrap text-base leading-8 text-gray-400">{blog.content}</div></article></main><Footer /></div>;
+  const canonical = blog.canonicalUrl || `https://www.digitalpintu.com/blogs/${blog.slug}`;
+  const articleSchema = { "@context":"https://schema.org", "@type":"BlogPosting", headline:blog.title, description, image:blog.ogImage || blogImage || undefined, datePublished:blog.publishedAt || blog.createdAt, dateModified:blog.updatedAt, author:{ "@type":"Organization", name:blog.author || "Digital Pintu" }, publisher:{ "@type":"Organization", name:"Digital Pintu", url:"https://www.digitalpintu.com" }, mainEntityOfPage:canonical, keywords:[blog.focusKeyword,...(blog.secondaryKeywords||[]),...(blog.tags||[])].filter(Boolean).join(", ") };
+  const breadcrumbSchema = { "@context":"https://schema.org", "@type":"BreadcrumbList", itemListElement:[{ "@type":"ListItem", position:1, name:"Home", item:"https://www.digitalpintu.com/" },{ "@type":"ListItem", position:2, name:"Blog", item:"https://www.digitalpintu.com/blogs" },{ "@type":"ListItem", position:3, name:blog.title, item:canonical }] };
+  const faqSchema = blog.faqs?.length ? { "@context":"https://schema.org", "@type":"FAQPage", mainEntity:blog.faqs.map((faq)=>({ "@type":"Question", name:faq.question, acceptedAnswer:{ "@type":"Answer", text:faq.answer } })) } : null;
+  return <div className="min-h-screen bg-[#050b14] text-white">
+    <Helmet><title>{title}</title><meta name="description" content={description}/>{blog.metaKeywords&&<meta name="keywords" content={blog.metaKeywords}/>}<meta name="robots" content={blog.noIndex?"noindex,follow":"index,follow"}/><link rel="canonical" href={canonical}/><meta property="og:type" content="article"/><meta property="og:title" content={blog.ogTitle||title}/><meta property="og:description" content={blog.ogDescription||description}/><meta property="og:url" content={canonical}/>{(blog.ogImage||blogImage)&&<meta property="og:image" content={blog.ogImage||blogImage}/>}<meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content={blog.ogTitle||title}/><meta name="twitter:description" content={blog.ogDescription||description}/>{(blog.ogImage||blogImage)&&<meta name="twitter:image" content={blog.ogImage||blogImage}/>}<script type="application/ld+json">{JSON.stringify(articleSchema)}</script><script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>{faqSchema&&<script type="application/ld+json">{JSON.stringify(faqSchema)}</script>}</Helmet>
+    <Navbar/><main className="relative overflow-hidden px-5 pb-28 pt-36"><div className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-cyan-500/10 blur-[150px]"/><article className="relative mx-auto max-w-4xl"><Link to="/blogs" className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-cyan-300 transition hover:border-cyan-400/40"><FiArrowLeft/> All insights</Link><header className="mt-9 text-center"><span className="rounded-full bg-cyan-500/10 px-4 py-2 text-xs font-bold uppercase tracking-widest text-cyan-300">{blog.category||"General"}</span><h1 className="mx-auto mt-7 max-w-4xl text-4xl font-black leading-[1.1] tracking-tight sm:text-6xl">{blog.title}</h1><p className="mx-auto mt-7 max-w-3xl text-xl leading-9 text-slate-400">{blog.excerpt}</p><div className="mt-7 flex flex-wrap justify-center gap-5 text-sm text-slate-500"><span className="flex items-center gap-2"><FiUser/> {blog.author}</span><time className="flex items-center gap-2" dateTime={blog.publishedAt||blog.createdAt}><FiCalendar/> {new Date(blog.publishedAt||blog.createdAt).toLocaleDateString("en-IN",{day:"numeric",month:"long",year:"numeric"})}</time><span className="flex items-center gap-2"><FiClock/> {Math.max(1,Math.ceil(String(blog.content||"").split(/\s+/).length/200))} min read</span></div></header>{blogImage&&<div className="mt-12 overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-2 shadow-2xl shadow-cyan-950/30"><img src={blogImage} alt={blog.imageAlt||blog.title} width="1200" height="630" className="max-h-[560px] w-full rounded-[1.6rem] object-cover"/></div>}<div className="mx-auto mt-12 max-w-3xl rounded-3xl border border-white/10 bg-white/[.025] p-7 sm:p-10"><div className="whitespace-pre-wrap text-[17px] leading-9 text-slate-300">{blog.content}</div></div>{blog.faqs?.length>0&&<section className="mx-auto mt-16 max-w-3xl"><p className="text-sm font-bold uppercase tracking-[.25em] text-cyan-400">Helpful answers</p><h2 className="mt-3 text-3xl font-black">Frequently asked questions</h2>{blog.faqs.map((faq)=><details key={faq.question} className="group mt-4 rounded-2xl border border-white/10 bg-white/[.03] p-5 transition open:border-cyan-400/30"><summary className="cursor-pointer font-semibold marker:text-cyan-400">{faq.question}</summary><p className="mt-4 leading-7 text-slate-400">{faq.answer}</p></details>)}</section>}</article></main><Footer/>
+  </div>;
 }
