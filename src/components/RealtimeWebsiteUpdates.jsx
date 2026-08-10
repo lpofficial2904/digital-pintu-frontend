@@ -22,9 +22,9 @@ export default function RealtimeWebsiteUpdates() {
     events.addEventListener("connected", (event) => {
       try {
         const { version } = JSON.parse(event.data);
-        if (!sessionStorage.getItem(VERSION_KEY)) {
-          sessionStorage.setItem(VERSION_KEY, String(version));
-        }
+        const previous = sessionStorage.getItem(VERSION_KEY);
+        if (!previous) sessionStorage.setItem(VERSION_KEY, String(version));
+        else if (previous !== String(version)) refreshWebsite(version);
       } catch {
         // A malformed handshake should not stop future update events.
       }
@@ -37,27 +37,10 @@ export default function RealtimeWebsiteUpdates() {
       }
     });
 
-    // A small version check covers sleeping tabs and temporary SSE disconnects.
-    const checkVersion = () => {
-      fetch(`${API_BASE_URL}/api/realtime/version`, { cache: "no-store" })
-        .then((response) => response.ok ? response.json() : null)
-        .then((data) => {
-          if (!data?.version) return;
-          const previous = sessionStorage.getItem(VERSION_KEY);
-          if (!previous) sessionStorage.setItem(VERSION_KEY, String(data.version));
-          else if (previous !== String(data.version)) refreshWebsite(data.version);
-        })
-        .catch(() => {});
-    };
-    const interval = window.setInterval(checkVersion, 15000);
-    window.addEventListener("focus", checkVersion);
-
     return () => {
       stopped = true;
       events.close();
-      window.clearInterval(interval);
       window.clearTimeout(refreshTimer);
-      window.removeEventListener("focus", checkVersion);
     };
   }, []);
 

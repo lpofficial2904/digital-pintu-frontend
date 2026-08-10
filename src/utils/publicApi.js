@@ -8,6 +8,16 @@ const memoryCache = new Map();
 const pendingRequests = new Map();
 const STORAGE_PREFIX = "digital-pintu-api:";
 
+// Remove responses cached by older builds. Public API data is now kept only in
+// memory, so complete JSON payloads are not persisted in browser storage.
+try {
+  Object.keys(localStorage)
+    .filter((key) => key.startsWith(STORAGE_PREFIX))
+    .forEach((key) => localStorage.removeItem(key));
+} catch {
+  // Storage can be unavailable in privacy modes.
+}
+
 export const clearPublicApiCache = () => {
   memoryCache.clear();
   pendingRequests.clear();
@@ -20,26 +30,8 @@ export const clearPublicApiCache = () => {
   }
 };
 
-const readStored = (url, maxAge) => {
-  try {
-    const stored = JSON.parse(localStorage.getItem(`${STORAGE_PREFIX}${url}`));
-    if (stored && Date.now() - stored.savedAt < maxAge) return stored.data;
-  } catch {
-    // Ignore unavailable or invalid browser storage.
-  }
-  return undefined;
-};
-
 const store = (url, data) => {
   memoryCache.set(url, { data, savedAt: Date.now() });
-  try {
-    localStorage.setItem(
-      `${STORAGE_PREFIX}${url}`,
-      JSON.stringify({ data, savedAt: Date.now() })
-    );
-  } catch {
-    // The in-memory cache still works when storage is full or unavailable.
-  }
 };
 
 export const getCachedJson = (path, { maxAge = 5 * 60 * 1000, force = false } = {}) => {
@@ -51,11 +43,6 @@ export const getCachedJson = (path, { maxAge = 5 * 60 * 1000, force = false } = 
       return Promise.resolve(cached.data);
     }
 
-    const stored = readStored(url, maxAge);
-    if (stored !== undefined) {
-      memoryCache.set(url, { data: stored, savedAt: Date.now() });
-      return Promise.resolve(stored);
-    }
   }
 
   if (pendingRequests.has(url)) return pendingRequests.get(url);
