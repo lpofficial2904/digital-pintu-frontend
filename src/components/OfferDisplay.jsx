@@ -8,7 +8,7 @@ import { getCachedJson } from "../utils/publicApi";
 export default function OfferDisplay(){
  const {pathname}=useLocation(); const [offers,setOffers]=useState([]); const [closed,setClosed]=useState({});
  const barRef=useRef(null);
- useEffect(()=>{let active=true;const load=()=>getCachedJson("/api/offers",{force:true,maxAge:0}).then(d=>{if(active)setOffers(d.offers||[])}).catch(()=>{});load();const timer=window.setInterval(load,15000);window.addEventListener("focus",load);return()=>{active=false;window.clearInterval(timer);window.removeEventListener("focus",load)}},[]);
+ useEffect(()=>{let active=true;getCachedJson("/api/offers").then(d=>{if(active)setOffers(d.offers||[])}).catch(()=>{});return()=>{active=false}},[]);
  const offer=useMemo(()=>offers.find(o=>(o.pages?.length?o.pages:["all"]).some(raw=>{const p=String(raw).trim().replace(/\/$/,"")||"/";const current=pathname.replace(/\/$/,"")||"/";return p==="all"||p==="*"||p===current||(p.endsWith("/*")&&current.startsWith(p.slice(0,-1)))})),[offers,pathname]);
  const isBar=offer?.displayType==="bar"&&!closed[offer?._id];
  useEffect(()=>{if(!isBar){document.documentElement.style.setProperty("--offer-bar-height","0px");return}const update=()=>document.documentElement.style.setProperty("--offer-bar-height",`${barRef.current?.offsetHeight||0}px`);update();const observer=new ResizeObserver(update);if(barRef.current)observer.observe(barRef.current);window.addEventListener("resize",update);return()=>{observer.disconnect();window.removeEventListener("resize",update);document.documentElement.style.setProperty("--offer-bar-height","0px")}},[isBar,offer?._id]);

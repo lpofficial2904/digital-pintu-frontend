@@ -49,11 +49,11 @@ function Home({ refreshReviews, handleReviewAdded }) {
   const [activePages, setActivePages] = useState(null);
 
   useEffect(() => {
-    const load = () => getCachedJson(WEBSITE_PAGES_API, { force: true, maxAge: 0 })
-      .then((data) => setActivePages(new Set(data.map((page) => page.key))))
-      .catch(() => setActivePages(null));
-    load(); const interval = window.setInterval(load, 10000); window.addEventListener("focus", load);
-    return () => { window.clearInterval(interval); window.removeEventListener("focus", load); };
+    let active = true;
+    getCachedJson(WEBSITE_PAGES_API)
+      .then((data) => { if (active) setActivePages(new Set(data.map((page) => page.key))); })
+      .catch(() => { if (active) setActivePages(null); });
+    return () => { active = false; };
   }, []);
 
   const visible = (key) => activePages === null || activePages.has(key);

@@ -72,7 +72,7 @@ export default function useSiteSettings() {
 
   useEffect(() => {
     let active = true;
-    const syncSettings = (force = false) => getCachedJson("/api/site-settings", { maxAge: 30000, force })
+    const syncSettings = () => getCachedJson("/api/site-settings")
       .then((data) => {
         if (!active) return;
         setSettings((current) => ({
@@ -98,17 +98,10 @@ export default function useSiteSettings() {
       })
       .catch(() => {});
 
-    syncSettings(false);
-    const interval = window.setInterval(() => {
-      if (!document.hidden) syncSettings(true);
-    }, 15000);
-    const refresh = () => active && syncSettings(true);
-    window.addEventListener("focus", refresh);
+    syncSettings();
 
     return () => {
       active = false;
-      window.clearInterval(interval);
-      window.removeEventListener("focus", refresh);
     };
   }, []);
 

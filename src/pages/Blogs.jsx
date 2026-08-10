@@ -15,7 +15,7 @@ export default function Blogs() {
   const { contentSettings } = useSiteSettings();
   const copy = contentSettings.blogsPage;
   const [blogs, setBlogs] = useState([]); const [loading, setLoading] = useState(true); const [error, setError] = useState(""); const [query, setQuery] = useState("");
-  useEffect(() => { let active=true; const load=()=>getCachedJson("/api/blogs",{force:true,maxAge:0}).then(data=>{if(active){setBlogs(Array.isArray(data)?data:[]);setError("");}}).catch(()=>active&&setError("We could not load the blogs. Please try again shortly.")).finally(()=>active&&setLoading(false)); load(); window.addEventListener("focus",load); return()=>{active=false;window.removeEventListener("focus",load);}; },[]);
+  useEffect(() => { let active=true; getCachedJson("/api/blogs").then(data=>{if(active){setBlogs(Array.isArray(data)?data:[]);setError("");}}).catch(()=>active&&setError("We could not load the blogs. Please try again shortly.")).finally(()=>active&&setLoading(false)); return()=>{active=false;}; },[]);
   const filtered = useMemo(() => { const needle=query.trim().toLowerCase(); return needle ? blogs.filter(blog=>[blog.title,blog.excerpt,blog.category,...(blog.tags||[])].some(value=>String(value||"").toLowerCase().includes(needle))) : blogs; },[blogs,query]);
   const featured=filtered[0]; const remaining=filtered.slice(1);
   const prefetch=(slug)=>getCachedJson(`/api/blogs/${encodeURIComponent(slug)}`,{maxAge:600000}).catch(()=>{});

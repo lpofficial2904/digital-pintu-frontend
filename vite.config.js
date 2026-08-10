@@ -8,6 +8,10 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  build: {
+    // Production exposes only minified bundles, never original JSX source maps.
+    sourcemap: false,
+  },
   server: {
     watch: {
       usePolling: true, // Yeh line aapke save karte hi browser ko update karegi

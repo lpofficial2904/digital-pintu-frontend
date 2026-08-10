@@ -53,8 +53,7 @@ export default function Services({ showNavbar = true }) {
     let active = true;
     const fetchServices = async () => {
       try {
-        // Always request the latest public catalogue after an admin change.
-        const data = await getCachedJson("/api/services", { force: true, maxAge: 0 });
+        const data = await getCachedJson("/api/services");
         // console.log(data);
 
         if (active) { setServices(data); setError(""); }
@@ -65,9 +64,7 @@ export default function Services({ showNavbar = true }) {
       }
     };
     fetchServices();
-    const interval = window.setInterval(fetchServices, 10000);
-    window.addEventListener("focus", fetchServices);
-    return () => { active = false; window.clearInterval(interval); window.removeEventListener("focus", fetchServices); };
+    return () => { active = false; };
   }, []);
 
   return (

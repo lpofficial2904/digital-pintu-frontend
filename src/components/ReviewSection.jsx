@@ -17,9 +17,7 @@ export default function ReviewSection({ refresh }) {
     let mounted = true;
     const fetchReviews = async () => {
       try {
-        const response = await fetch(`${API_URL}?_t=${Date.now()}`, {
-          cache: "no-store",
-        });
+        const response = await fetch(API_URL);
         const data = await response.json();
         if (mounted && data.success) {
           const managedReviews = [...(data.reviews || [])].sort(
@@ -36,12 +34,8 @@ export default function ReviewSection({ refresh }) {
       }
     };
     fetchReviews();
-    const interval = window.setInterval(fetchReviews, 10000);
-    window.addEventListener("focus", fetchReviews);
     return () => {
       mounted = false;
-      window.clearInterval(interval);
-      window.removeEventListener("focus", fetchReviews);
     };
   }, [refresh]);
 
