@@ -20,6 +20,52 @@ body[data-theme="dark"] { color-scheme: dark; }
 .reduce-site-motion *, .reduce-site-motion *::before, .reduce-site-motion *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 .site-theme-button { background: linear-gradient(90deg,var(--site-primary),var(--site-secondary)); border-radius: var(--site-radius); }
 
+.certificate-result-dialog {
+  --certificate-border: color-mix(in srgb, var(--site-text, #fff) 12%, transparent);
+  color-scheme: inherit;
+  background: var(--site-surface, #0b1020);
+  color: var(--site-text, #fff);
+  border: 1px solid color-mix(in srgb, var(--site-primary, #22d3ee) 25%, transparent);
+  box-shadow: 0 32px 100px rgba(0, 0, 0, .55);
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--site-primary, #22d3ee) 35%, var(--site-surface, #0b1020)) var(--site-surface, #0b1020);
+}
+
+.certificate-result-header {
+  background: radial-gradient(ellipse at top, color-mix(in srgb, var(--site-primary, #22d3ee) 12%, transparent), transparent 75%),
+    var(--site-surface, #0b1020);
+}
+
+.certificate-result-close {
+  background: color-mix(in srgb, var(--site-bg, #070b14) 60%, transparent);
+  color: var(--site-muted, #94a3b8);
+}
+
+.certificate-result-close:hover {
+  background: color-mix(in srgb, var(--site-primary, #22d3ee) 10%, var(--site-surface, #0b1020));
+  color: var(--site-primary, #22d3ee);
+}
+
+.certificate-result-badge {
+  border-color: color-mix(in srgb, var(--site-primary, #22d3ee) 30%, transparent);
+  background: color-mix(in srgb, var(--site-primary, #22d3ee) 12%, transparent);
+  color: var(--site-primary, #22d3ee);
+}
+
+.certificate-result-dialog[data-status="invalid"] .certificate-result-badge {
+  border-color: rgba(251, 113, 133, .3);
+  background: rgba(244, 63, 94, .12);
+  color: #fb7185;
+}
+
+.certificate-result-footer {
+  background: color-mix(in srgb, var(--site-bg, #070b14) 65%, var(--site-surface, #0b1020));
+}
+
+.certificate-result-done {
+  background: linear-gradient(100deg, var(--site-primary, #22d3ee), var(--site-secondary, #3b82f6));
+}
+
 #root {
   width: 100%;
   min-width: 0;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import axios from "axios";
@@ -8,6 +8,7 @@ import { Globe2, Handshake, Rocket, Target, ArrowRight } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import useSiteSettings from "../utils/useSiteSettings";
+import CertificateVerification from "../components/CertificateVerification";
 
 const API_URL = "https://api.digitalpintu.com/api/website-pages";
 const CAREER_APPLICATIONS_API = "https://api.digitalpintu.com/api/career-applications";
@@ -121,6 +122,7 @@ function AboutPage() {
 export default function ManagedPage({ pageSlug }) {
   const params = useParams();
   const slug = pageSlug || params.slug;
+  const [searchParams] = useSearchParams();
   const [page, setPage] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -267,6 +269,7 @@ export default function ManagedPage({ pageSlug }) {
 
               {page.pageType === "careers" && (
                 <>
+                <CertificateVerification initialNumber={searchParams.get('certificate') || ''} />
                 <section className="relative mt-16">
                   <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
                     <div><p className="text-sm uppercase tracking-[.25em] text-cyan-300">Open positions</p><h2 className="mt-2 text-3xl font-bold">Current opportunities</h2></div>
@@ -350,6 +353,7 @@ export default function ManagedPage({ pageSlug }) {
             </section>}
           </>
         )}
+        {!loading && !page && slug === 'careers' && <CertificateVerification initialNumber={searchParams.get('certificate') || ''} />}
       </main>
       <Footer />
     </div>

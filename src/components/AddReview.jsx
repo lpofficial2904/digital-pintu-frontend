@@ -5,7 +5,6 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'sonner';
 import {
-  FiBriefcase,
   FiMessageSquare,
   FiStar,
   FiSend,
@@ -21,7 +20,6 @@ export default function AddReview({ onReviewAdded }) {
 
   const navigate = useNavigate();
 
-  const [designation, setDesignation] = useState("");
   const [company, setCompany] = useState("");
   const [review, setReview] = useState("");
   const [rating, setRating] = useState(5);
@@ -52,7 +50,6 @@ export default function AddReview({ onReviewAdded }) {
         },
 
         body: JSON.stringify({
-          designation,
           company,
           review,
           rating,
@@ -65,13 +62,12 @@ export default function AddReview({ onReviewAdded }) {
         throw new Error(data.message);
       }
 
-      
+
       toast.success('Review Added Successfully !');
 
-     setDesignation("");
-setCompany("");
-setReview("");
-setRating(5);
+      setCompany("");
+      setReview("");
+      setRating(5);
 
       if (onReviewAdded) {
         onReviewAdded();
@@ -127,23 +123,6 @@ setRating(5);
             onSubmit={handleSubmit}
             className="space-y-5"
           >
-
-            {/* Designation */}
-
-            <div className="relative">
-
-              <FiBriefcase className="absolute left-4 top-5 text-cyan-400" />
-
-              <input
-                type="text"
-                placeholder="Designation"
-                required
-                value={designation}
-                onChange={(e) => setDesignation(e.target.value)}
-                className="w-full h-14 rounded-xl bg-[#0d1725] pl-12 pr-5 text-white border border-white/10"
-              />
-
-            </div>
 
             {/* Company */}
 

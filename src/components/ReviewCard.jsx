@@ -66,7 +66,7 @@ export default function ReviewCard({ review, active = false, accentIndex = 0 }) 
         <div className="min-w-0">
           <h3 className="truncate text-base font-bold text-white">{review.name}</h3>
           <p className="mt-1 truncate text-sm text-slate-500">
-            {[review.designation, review.company].filter(Boolean).join(", ")}
+            {review.company}
           </p>
         </div>
       </footer>

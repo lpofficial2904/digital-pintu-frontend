@@ -24,6 +24,7 @@ import useSiteSettings from "./utils/useSiteSettings";
 import { API_BASE_URL } from "./utils/publicApi";
 
 const WEBSITE_PAGES_API = `${API_BASE_URL}/api/website-pages`;
+const VerifyCertificate = lazy(() => import('./pages/VerifyCertificate'));
 const Login = lazy(() => import("./pages/Login")); const Register = lazy(() => import("./pages/Register")); const ServiceDetails = lazy(() => import("./pages/ServiceDetails")); const Blogs = lazy(() => import("./pages/Blogs")); const BlogDetails = lazy(() => import("./pages/BlogDetails")); const ManagedPage = lazy(() => import("./pages/ManagedPage")); const LegalPage = lazy(() => import("./pages/LegalPage")); const NotFound = lazy(() => import("./pages/NotFound"));
 
 function PageGate({ slug, children }) {
@@ -122,6 +123,7 @@ function App() {
       <Route path="/blogs/:slug" element={<PageGate slug="blogs"><BlogDetails /></PageGate>} />
       <Route path="/about" element={<ManagedPage pageSlug="about" />} />
       <Route path="/careers" element={<ManagedPage pageSlug="careers" />} />
+      <Route path="/verify" element={<VerifyCertificate />} />
       <Route path="/privacy-policy" element={<LegalPage type="privacy" />} />
       <Route path="/terms" element={<LegalPage type="terms" />} />
       <Route path="/pages/:slug" element={<ManagedPage />} />

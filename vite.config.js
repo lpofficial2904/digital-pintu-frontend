@@ -13,6 +13,8 @@ export default defineConfig({
     sourcemap: false,
   },
   server: {
+    port: 5173,
+    strictPort: true,
     watch: {
       usePolling: true, // Yeh line aapke save karte hi browser ko update karegi
     },
