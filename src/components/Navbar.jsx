@@ -45,7 +45,7 @@ const navLinks = [
   { title: "Process", path: "/#process" },
   { title: "Blogs", path: "/blogs" },
   { title: "Reviews", path: "/#reviews" },
-  { title: "Contact", path: "/#contact" },
+  { title: "Contact", path: "/contact" },
 ];
 
 const WEBSITE_PAGES_API = `${API_BASE_URL}/api/website-pages`;
@@ -57,7 +57,7 @@ const getPagePath = (page) => {
     process: "/#process",
     blogs: "/blogs",
     reviews: "/#reviews",
-    contact: "/#contact",
+    contact: "/contact",
     about: "/about",
     careers: "/careers",
   };
@@ -80,32 +80,9 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [managedNavLinks, setManagedNavLinks] = useState(navLinks);
 
-  // Smooth scroll handler
-  const scrollToSection = (id, title) => {
-    setActive(title);
+  const handleNavLinkClick = (item) => {
+    setActive(item.title);
     setMobileOpen(false);
-    navigate("/");
-
-    window.setTimeout(() => {
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }
-    }, 0);
-  };
-
-  const handleNavLinkClick = (e, item) => {
-    if (item.path && item.path.includes("#")) {
-      e.preventDefault();
-      const elementId = item.path.split("#")[1];
-      scrollToSection(elementId, item.title);
-    } else {
-      setActive(item.title);
-      setMobileOpen(false);
-    }
   };
 
   // 2. Combined Logout Handler with toast.promise
@@ -352,7 +329,7 @@ export default function Navbar() {
                   key={item.title}
                   to={item.path}
                   onMouseEnter={() => setActive(item.title)}
-                  onClick={(e) => handleNavLinkClick(e, item)}
+                  onClick={() => handleNavLinkClick(item)}
                   className="relative px-5 py-3 rounded-full"
                 >
                   {active === item.title && (
@@ -542,7 +519,7 @@ export default function Navbar() {
                   <Link
                     key={item.title}
                     to={item.path}
-                    onClick={(e) => handleNavLinkClick(e, item)}
+                    onClick={() => handleNavLinkClick(item)}
                     className="rounded-xl px-4 py-4 text-gray-300 hover:bg-white/5"
                   >
                     {item.title}

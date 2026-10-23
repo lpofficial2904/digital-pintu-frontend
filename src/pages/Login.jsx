@@ -48,13 +48,7 @@ export default function Login() {
         setLoading(false);
 
         if (location.state?.returnToContact) {
-          navigate("/#contact", { replace: true });
-          window.setTimeout(() => {
-            document.getElementById("contact")?.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          }, 150);
+          navigate("/contact", { replace: true });
         } else {
           navigate("/");
         }

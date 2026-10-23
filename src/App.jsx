@@ -20,6 +20,7 @@ import RealtimeWebsiteUpdates from "./components/RealtimeWebsiteUpdates";
 import SeoManager from "./components/SeoManager";
 import ThemeManager from "./components/ThemeManager";
 import OfferDisplay from "./components/OfferDisplay";
+import ScrollToTop from "./components/ScrollToTop";
 import useSiteSettings from "./utils/useSiteSettings";
 import { API_BASE_URL } from "./utils/publicApi";
 
@@ -87,6 +88,7 @@ function App() {
 
   return (
     <>
+    <ScrollToTop />
     <ThemeManager />
     <OfferDisplay />
     <RealtimeWebsiteUpdates />
@@ -118,7 +120,7 @@ function App() {
     </PageGate>
   }
 />
-      <Route path="/contact/" element={<PageGate slug="contact"><Contact /></PageGate>} />
+      <Route path="/contact" element={<PageGate slug="contact"><Contact /></PageGate>} />
       <Route path="/blogs" element={<PageGate slug="blogs"><Blogs /></PageGate>} />
       <Route path="/blogs/:slug" element={<PageGate slug="blogs"><BlogDetails /></PageGate>} />
       <Route path="/about" element={<ManagedPage pageSlug="about" />} />

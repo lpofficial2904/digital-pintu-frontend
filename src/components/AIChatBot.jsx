@@ -53,7 +53,7 @@ export default function AIChatBot() {
       text: defaultSettings.chatbotGreeting,
     },
   ]);
-  const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
 
   useEffect(() => {
     Promise.allSettled([
@@ -80,8 +80,9 @@ export default function AIChatBot() {
   }, []);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    const container = messagesContainerRef.current;
+    container?.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+  }, [messages, isOpen]);
 
   const sendMessage = (value) => {
     const text = value.trim();
@@ -137,13 +138,7 @@ export default function AIChatBot() {
       if (asksForContact) {
         window.setTimeout(() => {
           setIsOpen(false);
-          navigate("/");
-          window.setTimeout(() => {
-            document.getElementById("contact")?.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          }, 150);
+          navigate("/contact");
         }, 1800);
       }
     }, 450);
@@ -187,7 +182,7 @@ export default function AIChatBot() {
             </div>
           </header>
 
-          <div className="flex-1 space-y-4 overflow-y-auto bg-gradient-to-b from-[#0a1625] to-[#07111d] p-4">
+          <div ref={messagesContainerRef} className="flex-1 space-y-4 overflow-y-auto bg-gradient-to-b from-[#0a1625] to-[#07111d] p-4">
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -245,7 +240,6 @@ export default function AIChatBot() {
                 </div>
               </div>
             ))}
-            <div ref={messagesEndRef} />
           </div>
 
           <div className="flex gap-2 overflow-x-auto border-t border-white/5 px-3 pt-3">

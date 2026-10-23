@@ -2,19 +2,20 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   BadgeCheck,
+  CircleCheck,
   ShieldCheck,
   Search,
-  X,
   CircleAlert,
   LoaderCircle,
-  ArrowUpRight,
+  Download,
+  Share2,
 } from "lucide-react";
 import { API_BASE_URL } from "../utils/publicApi";
 
 const dateText = (value) =>
   new Date(value).toLocaleDateString("en-GB", {
     day: "2-digit",
-    month: "long",
+    month: "short",
     year: "numeric",
     timeZone: "UTC",
   });
@@ -25,8 +26,13 @@ export default function CertificateVerification({ initialNumber = "" }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const [actionNotice, setActionNotice] = useState(null);
+  const [showShareLink, setShowShareLink] = useState(false);
   const requestRef = useRef(null);
   const dialogRef = useRef(null);
+  const titleRef = useRef(null);
   const sectionRef = useRef(null);
   const timerRef = useRef(null);
 
@@ -38,6 +44,8 @@ export default function CertificateVerification({ initialNumber = "" }) {
     setLoading(true);
     setResult(null);
     setError("");
+    setActionNotice(null);
+    setShowShareLink(false);
     try {
       const response = await fetch(
         `${API_BASE_URL}/api/certificates/verify/${encodeURIComponent(value.trim().toUpperCase())}`,
@@ -87,7 +95,11 @@ export default function CertificateVerification({ initialNumber = "" }) {
   }, [number, initialNumber]);
   useEffect(() => {
     const dialog = dialogRef.current;
-    if (open && !dialog.open) dialog.showModal();
+    if (open && !dialog.open) {
+      dialog.showModal();
+      titleRef.current?.focus({ preventScroll: true });
+      dialog.scrollTop = 0;
+    }
     if (!open && dialog.open) dialog.close();
     if (!open) return;
     const previousOverflow = document.body.style.overflow;
@@ -107,16 +119,91 @@ export default function CertificateVerification({ initialNumber = "" }) {
   }
   const valid = result?.valid;
   const certificate = result?.certificate;
+  const shareUrl = certificate
+    ? result.verificationUrl || new URL(
+        `/careers?certificate=${encodeURIComponent(certificate.certificateNumber)}#verify-certificate`,
+        window.location.origin,
+      ).href
+    : "";
+
+  async function downloadPdf() {
+    if (!valid || downloading) return;
+    setDownloading(true);
+    setActionNotice(null);
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/certificates/verify/${encodeURIComponent(certificate.certificateNumber)}/pdf`,
+        { cache: "no-store" },
+      );
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.message || "Unable to download the certificate. Please try again.");
+      }
+      const url = URL.createObjectURL(await response.blob());
+      const link = document.createElement("a");
+      link.href = url;
+      const studentName = String(certificate.recipientName || "Student")
+        .normalize("NFC")
+        .replace(/[^\p{L}\p{M}\p{N}._-]+/gu, "-")
+        .replace(/-+/g, "-")
+        .replace(/^[.-]+|[.-]+$/g, "") || "Student";
+      link.download = certificate.downloadFilename || `${studentName}-${certificate.certificateNumber}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      setActionNotice({ text: "Your certificate PDF download has started." });
+    } catch (error) {
+      setActionNotice({
+        error: true,
+        text: error instanceof TypeError
+          ? "Download is temporarily unavailable. Please try again."
+          : error.message,
+      });
+    } finally {
+      setDownloading(false);
+    }
+  }
+
+  async function shareCertificate() {
+    if (!valid || sharing) return;
+    setSharing(true);
+    setActionNotice(null);
+    setShowShareLink(false);
+    try {
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: "Digital Pintu IT Solutions — Verified Certificate",
+            text: `View the verified internship completion certificate issued to ${certificate.recipientName} in ${certificate.field}.`,
+            url: shareUrl,
+          });
+          return;
+        } catch (error) {
+          if (error.name === "AbortError") return;
+          // Browsers that cannot share can still copy the verification link.
+        }
+      }
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        setActionNotice({ text: "Verification link copied to clipboard." });
+      } catch {
+        setShowShareLink(true);
+        setActionNotice({ text: "Copy this verification link to share the certificate." });
+      }
+    } finally {
+      setSharing(false);
+    }
+  }
+
   const details = certificate
     ? [
-        ["Certificate number", certificate.certificateNumber],
-        ["Internship field", certificate.field],
-        ["Start date", dateText(certificate.startDate)],
-        ["Completion date", dateText(certificate.endDate)],
-        ["Issue date", dateText(certificate.issueDate)],
-        ["Status", "Issued / valid"],
-        ["Authorized by", certificate.signatoryName],
-        ["Designation", certificate.signatoryTitle],
+        ["Certificate ID", certificate.certificateNumber],
+        ["Internship Field", certificate.field],
+        ["Start Date", dateText(certificate.startDate)],
+        ["Completion Date", dateText(certificate.endDate)],
+        ["Date of Issue", dateText(certificate.issueDate)],
+        ["Authorized Signatory", certificate.signatoryName],
       ]
     : [];
   return (
@@ -133,17 +220,17 @@ export default function CertificateVerification({ initialNumber = "" }) {
           </div>
           <div>
             <p className="text-xs uppercase tracking-[.25em] text-cyan-300">
-              Official credential verification
+              Official Certificate Verification
             </p>
             <h2 className="mt-2 text-2xl font-bold sm:text-3xl">
-              Your achievement. Verified.
+              Verify an Internship Certificate
             </h2>
           </div>
         </div>
         <p className="relative mt-5 max-w-2xl text-sm leading-6 text-slate-400">
-          Check a Digital Pintu IT Solutions internship certificate against our
-          official records. Enter the certificate number below to view its
-          details and validity.
+          Confirm the authenticity of a certificate issued by Digital Pintu IT
+          Solutions. Enter the certificate ID to view the recipient, internship
+          details and current validity status.
         </p>
         <form
           onSubmit={(event) => {
@@ -157,7 +244,7 @@ export default function CertificateVerification({ initialNumber = "" }) {
               htmlFor="certificate-number"
               className="text-sm text-slate-300"
             >
-              Certificate number
+              Certificate ID
             </label>
             <div className="relative mt-2">
               <Search
@@ -187,12 +274,12 @@ export default function CertificateVerification({ initialNumber = "" }) {
             ) : (
               <BadgeCheck size={18} />
             )}
-            {loading ? "Checking records..." : "Verify certificate"}
+            {loading ? "Verifying..." : "Verify Certificate"}
           </button>
         </form>
         <p className="mt-4 flex items-center gap-2 text-xs text-slate-500">
-          <ShieldCheck size={14} /> Secure lookup directly from the issuing
-          organization.
+          <ShieldCheck size={14} /> Certificate details are checked against the
+          issuer's official records.
         </p>
         <div aria-live="polite">
           {error && !open && (
@@ -205,7 +292,7 @@ export default function CertificateVerification({ initialNumber = "" }) {
               onClick={() => setOpen(true)}
               className="mt-4 text-sm text-cyan-300 underline"
             >
-              View verification result
+              View Verification Result
             </button>
           )}
         </div>
@@ -220,88 +307,140 @@ export default function CertificateVerification({ initialNumber = "" }) {
           onClick={(event) => {
             if (event.target === event.currentTarget) setOpen(false);
           }}
-          className="certificate-result-dialog fixed inset-0 m-auto max-h-[90dvh] w-[calc(100%_-_2rem)] max-w-2xl overflow-y-auto rounded-3xl p-0 backdrop:bg-slate-950/80 backdrop:backdrop-blur-sm"
+          aria-describedby="verification-description"
+          className="certificate-result-dialog"
         >
-          <div className="certificate-result-header relative overflow-hidden border-b border-[var(--certificate-border)] px-6 pb-7 pt-8 text-center sm:px-10">
-            <button
-              autoFocus
-              onClick={() => setOpen(false)}
-              aria-label="Close verification result"
-              className="certificate-result-close absolute right-4 top-4 rounded-full border border-[var(--certificate-border)] p-2 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--site-primary)]"
-            >
-              <X size={18} />
-            </button>
-            <div className="certificate-result-badge mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border">
-              {valid ? <BadgeCheck size={33} /> : <CircleAlert size={30} />}
+          <div className="certificate-result-header">
+            <div className="certificate-result-badge" aria-hidden="true">
+              {valid ? <CircleCheck size={30} /> : <CircleAlert size={30} />}
             </div>
-            <p
-              className={`text-[10px] font-bold uppercase tracking-[.25em] ${valid ? "text-[var(--site-primary)]" : "text-rose-400"}`}
-            >
+            <p className="certificate-result-issuer">
               Digital Pintu IT Solutions
             </p>
-            <h2
-              id="verification-title"
-              className="mt-2 text-2xl font-bold sm:text-3xl"
-            >
+            <h2 ref={titleRef} id="verification-title" tabIndex={-1}>
               {valid
-                ? "Certificate verified"
+                ? "Certificate Verified"
                 : result?.status === "revoked"
-                  ? "Certificate revoked"
-                  : "Unable to verify"}
+                  ? "Certificate Revoked"
+                  : "Unable to Verify"}
             </h2>
-            <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-[var(--site-muted)]">
+            <p id="verification-description" className="certificate-result-description">
               {valid
-                ? "This certificate is authentic and matches the official record issued by Digital Pintu IT Solutions."
+                ? "This certificate is authentic and matches the official records of Digital Pintu IT Solutions."
                 : result?.message || error}
             </p>
+            {valid && (
+              <span className="certificate-result-status">
+                <CircleCheck size={16} aria-hidden="true" /> Issued and Valid
+              </span>
+            )}
           </div>
           {valid && (
-            <div className="px-6 pb-2 sm:px-10">
-              <div className="border-b border-[var(--certificate-border)] py-6">
-                <p className="text-xs uppercase tracking-widest text-[var(--site-primary)]">
-                  Awarded to
-                </p>
-                <h3 className="mt-2 break-words text-2xl font-semibold sm:text-3xl">
-                  {certificate.recipientName}
-                </h3>
-                <p className="mt-2 text-sm text-[var(--site-muted)]">
-                  Internship completion certificate
-                </p>
-              </div>
-              <dl className="grid gap-x-6 gap-y-5 py-6 text-sm sm:grid-cols-2">
-                {details.map(([label, value]) => (
-                  <div key={label}>
-                    <dt className="text-xs text-[var(--site-muted)]">
-                      {label}
-                    </dt>
-                    <dd
-                      className={`mt-1.5 break-words font-medium ${label === "Status" ? "text-[var(--site-primary)]" : ""}`}
-                    >
-                      {value}
-                    </dd>
+            <div className="certificate-result-content">
+              <div className="certificate-result-record" data-has-qr={!!result.qrCode}>
+                <div>
+                  <div className="certificate-result-recipient">
+                    <p className="certificate-result-eyebrow">
+                      Certificate Recipient
+                    </p>
+                    <h3>{certificate.recipientName}</h3>
+                    <p className="certificate-result-subtitle">
+                      Certificate of Internship Completion
+                    </p>
                   </div>
-                ))}
-              </dl>
-              <div className="flex items-center gap-2 border-t border-[var(--certificate-border)] py-4 text-xs text-[var(--site-muted)]">
-                <ShieldCheck
-                  size={16}
-                  className="shrink-0 text-[var(--site-primary)]"
-                />{" "}
-                Verified against the current issuer record.
+                  <dl className="certificate-result-details">
+                    {details.map(([label, value]) => (
+                      <div key={label}>
+                        <dt>{label}</dt>
+                        <dd>
+                          {value}
+                          {label === "Authorized Signatory" && certificate.signatoryTitle && (
+                            <span className="certificate-result-designation">
+                              {certificate.signatoryTitle}
+                            </span>
+                          )}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+                {result.qrCode && (
+                  <figure className="certificate-result-qr">
+                    <a
+                      href={shareUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="certificate-result-qr-link"
+                      aria-label={`Open the official verification record for certificate ${certificate.certificateNumber} (opens in a new tab)`}
+                    >
+                      <img
+                        src={result.qrCode}
+                        width={360}
+                        height={360}
+                        alt={`QR code to verify certificate ${certificate.certificateNumber}`}
+                      />
+                    </a>
+                    <figcaption>
+                      <strong>Scan to Verify</strong>
+                      <span>Scan this QR code to view the official verification record.</span>
+                    </figcaption>
+                  </figure>
+                )}
+              </div>
+              <div className="certificate-result-trust">
+                <ShieldCheck size={16} aria-hidden="true" />
+                Verified directly with the issuing organization.
               </div>
             </div>
           )}
-          <div className="certificate-result-footer flex flex-wrap items-center justify-between gap-4 border-t border-[var(--certificate-border)] px-6 py-5 sm:px-10">
-            <a
-              href="/careers#verify-certificate"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-1 text-sm font-medium text-[var(--site-muted)] transition hover:text-[var(--site-primary)]"
-            >
-              Careers at Digital Pintu <ArrowUpRight size={16} />
-            </a>
+          <div className="certificate-result-footer">
+            {valid && (
+              <div className="certificate-result-actions">
+                <button
+                  type="button"
+                  onClick={downloadPdf}
+                  disabled={downloading}
+                  aria-busy={downloading}
+                  className="certificate-result-action"
+                >
+                  {downloading
+                    ? <LoaderCircle size={17} className="animate-spin" aria-hidden="true" />
+                    : <Download size={17} aria-hidden="true" />}
+                  {downloading ? "Preparing PDF..." : "Download PDF"}
+                </button>
+                <button
+                  type="button"
+                  onClick={shareCertificate}
+                  disabled={sharing}
+                  className="certificate-result-action"
+                >
+                  <Share2 size={17} aria-hidden="true" />
+                  {sharing ? "Sharing..." : "Share Certificate"}
+                </button>
+              </div>
+            )}
+            {actionNotice && (
+              <p
+                role={actionNotice.error ? "alert" : "status"}
+                className={`certificate-result-notice${actionNotice.error ? " certificate-result-notice-error" : ""}`}
+              >
+                {actionNotice.text}
+              </p>
+            )}
+            {showShareLink && (
+              <input
+                aria-label="Certificate verification link"
+                className="certificate-result-share-link"
+                readOnly
+                value={shareUrl}
+                onFocus={(event) => event.target.select()}
+                onClick={(event) => event.currentTarget.select()}
+              />
+            )}
             <button
+              type="button"
               onClick={() => setOpen(false)}
-              className="certificate-result-done rounded-xl px-6 py-2.5 text-sm font-semibold text-white transition hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--site-primary)]"
+              className="certificate-result-done"
             >
               Done
             </button>

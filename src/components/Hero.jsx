@@ -7,8 +7,8 @@ import useSiteSettings from "../utils/useSiteSettings";
 export default function Hero() {
   const { contentSettings } = useSiteSettings();
   const hero = contentSettings.hero;
-  const primaryButtonUrl = !hero.primaryButtonUrl || hero.primaryButtonUrl === "/#contact"
-    ? "/contact/"
+  const primaryButtonUrl = !hero.primaryButtonUrl || ["/#contact", "#contact", "/contact/"].includes(hero.primaryButtonUrl)
+    ? "/contact"
     : hero.primaryButtonUrl;
   return (
     <section id="home" className="relative min-h-screen overflow-hidden bg-[#070B14] pt-32">

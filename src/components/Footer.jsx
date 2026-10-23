@@ -41,7 +41,7 @@ const getPagePath = (page) => {
     process: "/#process",
     blogs: "/blogs",
     reviews: "/#reviews",
-    contact: "/#contact",
+    contact: "/contact",
     about: "/about",
     careers: "/careers",
   };
